@@ -122,7 +122,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory=Non
                         else:
                             move['value'] = -value
                          
-                    memory.commit_ memory()
+                    memory.commit_memory()
              
                 if value == 1:
                     logger.info('%s WINS!', players[state.playerTurn]['name'])
