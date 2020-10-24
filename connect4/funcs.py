@@ -14,7 +14,7 @@ def playMatchesBetweenVersions(env, run_version, player1version, player2version,
     if player1version == -1:
         player1 = User('player1', env.state_size, env.action_size)
     else:
-        player1_NN = Residual_CNN(config.REG_CONST, config.LEARNING_RATE, env.input_shape,   env.action_size, config.HIDDEN_CNN_LAYERS)
+        player1_NN = Residual_CNN(config.REG_CONST, config.LEARNING_RATE, env.input_shape, env.action_size, config.HIDDEN_CNN_LAYERS)
 
         if player1version > 0:
             player1_network = player1_NN.read(env.name, run_version, player1version)
@@ -24,7 +24,7 @@ def playMatchesBetweenVersions(env, run_version, player1version, player2version,
     if player2version == -1:
         player2 = User('player2', env.state_size, env.action_size)
     else:
-        player2_NN = Residual_CNN(config.REG_CONST, config.LEARNING_RATE, env.input_shape,   env.action_size, config.HIDDEN_CNN_LAYERS)
+        player2_NN = Residual_CNN(config.REG_CONST, config.LEARNING_RATE, env.input_shape, env.action_size, config.HIDDEN_CNN_LAYERS)
         
         if player2version > 0:
             player2_network = player2_NN.read(env.name, run_version, player2version)
@@ -62,18 +62,22 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory=Non
             player1Starts = goes_first
 
         if player1Starts == 1:
-            players = {1:{"agent": player1, "name":player1.name}
-                    , -1: {"agent": player2, "name":player2.name}
+            players = {1: {"agent": player1, "name": player1.name}
+                    , -1: {"agent": player2, "name": player2.name}
             }
             logger.info(player1.name + ' plays as X')
         else:
-            players = {1:{"agent": player2, "name":player2.name}
-                    , -1: {"agent": player1, "name":player1.name}
+            players = {1: {"agent": player2, "name": player2.name}
+                    , -1: {"agent": player1, "name": player1.name}
             }
             logger.info(player2.name + ' plays as X')
             logger.info('--------------')
 
         env.gameState.render(logger)
+
+        if isinstance(player1, User) or isinstance(player2, User):
+            print('\nActions: {}'.format(env.gameState.allowedActions))
+            env.gameState.renderTerminal()
 
         while done == 0:
             turn = turn + 1
@@ -93,14 +97,21 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory=Non
             for r in range(env.grid_shape[0]):
                 logger.info(['----' if x == 0 else '{0:.2f}'.format(np.round(x,2)) for x in pi[env.grid_shape[1] * r : (env.grid_shape[1] * r + env.grid_shape[1])]])
 
-            logger.info('MCTS perceived value for %s: %f', state.pieces[str(state.playerTurn)] ,np.round(MCTS_value,2))
-            logger.info('NN perceived value for %s: %f', state.pieces[str(state.playerTurn)] ,np.round(NN_value,2))
+            if MCTS_value:
+                logger.info('MCTS perceived value for %s: %f', state.pieces[str(state.playerTurn)], np.round(MCTS_value, 2))
+            if NN_value:
+                logger.info('NN perceived value for %s: %f', state.pieces[str(state.playerTurn)], np.round(NN_value, 2))
+            
             logger.info('====================')
 
             ### Do the action
             state, value, done, _ = env.step(action) # the value of the newState from the POV of the new playerTurn i.e. -1 if the previous player played a winning move
             
             env.gameState.render(logger)
+
+            if isinstance(player1, User) or isinstance(player2, User):
+                print('\nActions: {}'.format(env.gameState.allowedActions))
+                env.gameState.renderTerminal()
 
             if done == 1: 
                 if memory != None:
@@ -111,7 +122,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory=Non
                         else:
                             move['value'] = -value
                          
-                    memory.commit_ltmemory()
+                    memory.commit_ memory()
              
                 if value == 1:
                     logger.info('%s WINS!', players[state.playerTurn]['name'])

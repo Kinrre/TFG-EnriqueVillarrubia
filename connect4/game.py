@@ -43,7 +43,7 @@ class Game:
         ])
 
         currentAV = np.array([
-            currentAV[6], currentAV[5],currentAV[4], currentAV[3], currentAV[2], currentAV[1], currentAV[0]
+              currentAV[6], currentAV[5],currentAV[4], currentAV[3], currentAV[2], currentAV[1], currentAV[0]
             , currentAV[13], currentAV[12],currentAV[11], currentAV[10], currentAV[9], currentAV[8], currentAV[7]
             , currentAV[20], currentAV[19],currentAV[18], currentAV[17], currentAV[16], currentAV[15], currentAV[14]
             , currentAV[27], currentAV[26],currentAV[25], currentAV[24], currentAV[23], currentAV[22], currentAV[21]
@@ -225,3 +225,12 @@ class GameState():
             logger.info([self.pieces[str(x)] for x in self.board[7 * r : (7 * r + 7)]])
 
         logger.info('--------------')
+
+    def renderTerminal(self):
+        for r in range(6):
+            column = 7 * r
+            print(str(column).ljust(3), end='') # Fill with spaces
+
+            print([self.pieces[str(x)] for x in self.board[column : (column + 7)]])
+
+        print('--------------')
