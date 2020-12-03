@@ -8,8 +8,10 @@ ROOK = 4
 QUEEN = 5
 KING = 6
 
-PIECES = {'p': PAWN, 'k': KNIGHT, 'b': BISHOP, 'r': ROOK, 'q': QUEEN, 'k': KING}
+PIECES = {'p': -PAWN, 'k': -KNIGHT, 'b': -BISHOP, 'r': -ROOK, 'q': -QUEEN, 'k': -KING,
+          'P': PAWN, 'K': KNIGHT, 'B': BISHOP, 'R': ROOK, 'Q': QUEEN, 'K': KING}
 R_PIECES = {PAWN: 'p', KNIGHT: 'k', BISHOP: 'b', ROOK: 'r', QUEEN: 'q', KING: 'k'}
+
 
 class Piece:
 
@@ -19,7 +21,7 @@ class Piece:
         self.fen = '-'
 
         if self.piece_type != None and self.color != None:
-            self.fen = R_PIECES[piece_type]
+            self.fen = R_PIECES[piece_type] # KeyError
             
             if color is WHITE:
                 self.fen = self.fen.upper()
@@ -27,7 +29,7 @@ class Piece:
     @classmethod
     def from_fen(cls, fen):
         """ Create a piece from a fen piece. """
-        piece_type = PIECES[fen.lower()]
+        piece_type = PIECES[fen.lower()] # KeyError
         color = WHITE if fen.isupper() else BLACK
 
         return Piece(piece_type, color)
