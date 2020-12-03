@@ -1,17 +1,4 @@
-WHITE = 1
-BLACK = 0
-
-PAWN = 1
-KNIGHT = 2
-BISHOP = 3
-ROOK = 4
-QUEEN = 5
-KING = 6
-
-PIECES = {'p': -PAWN, 'k': -KNIGHT, 'b': -BISHOP, 'r': -ROOK, 'q': -QUEEN, 'k': -KING,
-          'P': PAWN, 'K': KNIGHT, 'B': BISHOP, 'R': ROOK, 'Q': QUEEN, 'K': KING}
-R_PIECES = {PAWN: 'p', KNIGHT: 'k', BISHOP: 'b', ROOK: 'r', QUEEN: 'q', KING: 'k'}
-
+from utils import WHITE, BLACK, PIECES, R_PIECES, MOVEMENTS
 
 class Piece:
 
@@ -32,7 +19,17 @@ class Piece:
         piece_type = PIECES[fen.lower()] # KeyError
         color = WHITE if fen.isupper() else BLACK
 
-        return Piece(piece_type, color)
+        return cls(piece_type, color)
+
+    @staticmethod
+    def get_number(fen):
+        """ Return the number corresponding to a piece. """
+        return PIECES[fen] # KeyError
+    
+    @staticmethod
+    def get_movement(number):
+        """ Return the movement corresponding to a piece. """
+        return MOVEMENTS[number] # KeyError
 
     def __repr__(self):
         return self.fen

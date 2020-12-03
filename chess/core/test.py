@@ -1,5 +1,8 @@
 import board
+fen = '1pppp1/6/P5/1PPPP1'
 
-b = board.Board()
+b = board.Board(4, 6, fen)
+#b.board *= -1
 print(b.board)
-print(b.valid_moves_square(1, 1))
+print(b.valid_moves())
+print(len(b.valid_moves()))
