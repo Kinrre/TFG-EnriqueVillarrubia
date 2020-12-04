@@ -57,14 +57,16 @@ class Board():
         for key, value in movements.items():
             if key == 'north':
                 self.__valid_moves_north(row, column, valid_moves, value)
+            elif key == 'south':
+                self.__valid_moves_south(row, column, valid_moves, value)
 
     def __valid_moves_north(self, row, column, valid_moves, movement):
         """ Return all the possible moves going north from a specific position. """
         position = (row, column)
 
-        column_row = self.board[:, column][::-1] # Reverse column of the row position
-        start_row = self.height - row # As the column is reverse, we need to calculate the new row
-        original_row = self.height - 1 # As we are indexing in reverse order, we need to return the original row
+        column_row = self.board[:, column][::-1] # Column of the row position
+        start_row = self.height - row # The row where we begin to move
+        original_row = self.height - 1 # As the column is reversed, this is the original_row
         movement_range = start_row + movement # Range of the movement
         
         if movement_range > self.height:
@@ -75,6 +77,28 @@ class Board():
 
             if piece <= 0:
                 new_position = (original_row - i, column)
+                valid_moves.append([position, new_position])
+            
+            # The piece cannot jump
+            if piece < 0 or piece > 0:
+                break
+
+    def __valid_moves_south(self, row, column, valid_moves, movement):
+        """ Return all the possible moves going north from a specific position. """
+        position = (row, column)
+
+        column_row = self.board[:, column] # Column of the row position
+        start_row = row + 1 # The row where we begin to move
+        movement_range = start_row + movement # Range of the movement
+        
+        if movement_range > self.height:
+            movement_range = self.height
+
+        for i in range(start_row, movement_range):
+            piece = column_row[i]
+
+            if piece <= 0:
+                new_position = (i, column)
                 valid_moves.append([position, new_position])
             
             # The piece cannot jump
