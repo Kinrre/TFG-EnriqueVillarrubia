@@ -61,6 +61,8 @@ class Board():
                 self.__valid_moves_south(row, column, valid_moves, value)
             elif key == 'west':
                 self.__valid_moves_west(row, column, valid_moves, value)
+            elif key == 'east':
+                self.__valid_moves_east(row, column, valid_moves, value)
 
     def __valid_moves_north(self, row, column, valid_moves, movement):
         """ Return all the possible moves going north from a specific position. """
@@ -124,6 +126,28 @@ class Board():
 
             if piece <= 0:
                 new_position = (row, original_column - i)
+                valid_moves.append([position, new_position])
+            
+            # The piece cannot jump
+            if piece < 0 or piece > 0:
+                break
+
+    def __valid_moves_east(self, row, column, valid_moves, movement):
+        """ Return all the possible moves going east from a specific position. """
+        position = (row, column)
+
+        row_column = self.board[row, :] # Row of the column position
+        start_column = column + 1 # The column where we begin to move
+        movement_range = start_column + movement # Range of the movement
+        
+        if movement_range > self.width:
+            movement_range = self.width
+
+        for i in range(start_column, movement_range):
+            piece = row_column[i]
+
+            if piece <= 0:
+                new_position = (row, i)
                 valid_moves.append([position, new_position])
             
             # The piece cannot jump
