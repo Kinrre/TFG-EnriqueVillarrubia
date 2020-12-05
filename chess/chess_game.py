@@ -14,15 +14,13 @@ class ChessGame(Game):
         self.board = Board(height, width, fen)
 
     def getInitBoard(self):
-        return self.board
+        return self.board.initial_board
 
     def getBoardSize(self):
-        return (self.board.height, self.board.width)
+        return self.board.board_size
 
     def getActionSize(self):
-        total_positions = self.board.height ** 2 * self.board.width ** 2
-        number_pieces = self.board.height * self.board.width
-        return total_positions - number_pieces
+        return self.board.action_size
 
     def getNextState(self, board, player, action):
         pass

@@ -18,11 +18,16 @@ class Board():
         self.width = width or DEFAULT_WIDTH
         self.fen = fen or DEFAULT_BOARD
 
-        self.board = np.zeros([self.height, self.width], dtype=np.byte)
+        self.initial_board = np.zeros([self.height, self.width], dtype=np.byte)
         self.__create_board_from_fen()
+        self.current_board = np.copy(self.initial_board)
+
+        self.board_size = self.__board_size()
+        self.action_size = self.__action_size()
         
-    def valid_moves(self):
-        """ Returns all the valid movements for the board. """
+    def valid_moves(self, board):
+        """ Returns all the valid movements for the current board. """
+        self.current_board = board
         valid_moves = []
 
         for row in range(self.height):
@@ -43,16 +48,26 @@ class Board():
                 row += 1
                 column = 0
             else:
-                self.board[row][column] = Piece.get_number(piece_type)
+                self.initial_board[row][column] = Piece.get_number(piece_type)
                 column += 1
+
+    def __board_size(self):
+        """ Returns the board size. """
+        return (self.height, self.width)
+
+    def __action_size(self):
+        """ Returns the action size of the board. """
+        total_positions = self.height ** 2 * self.width ** 2
+        number_pieces = self.height * self.width
+        return total_positions - number_pieces
 
     def __valid_moves_square(self, row, column, valid_moves):
         """ Returns all the possible moves from a specific position. """
         # Only the player can move him pieces
-        if self.board[row][column] < 1:
+        if self.current_board[row][column] < 1:
             return []
         
-        movements = Piece.get_movement(self.board[row][column])
+        movements = Piece.get_movement(self.current_board[row][column])
 
         for key, value in movements.items():
             if key == 'north':
@@ -68,9 +83,9 @@ class Board():
         """ Return all the possible moves going north from a specific position. """
         position = (row, column)
 
-        column_row = self.board[:, column][::-1] # Column of the row position
+        column_row = self.current_board[:, column][::-1] # Column of the row position
         start_row = self.height - row # The row where we begin to move
-        original_row = self.height - 1 # As the column is reversed, this is the original_row
+        max_row = self.height - 1 # As the column is reversed, we use this to obtain the not reversed row
         movement_range = start_row + movement # Range of the movement
         
         if movement_range > self.height:
@@ -80,7 +95,7 @@ class Board():
             piece = column_row[i]
 
             if piece <= 0:
-                new_position = (original_row - i, column)
+                new_position = (max_row- i, column)
                 valid_moves.append([position, new_position])
             
             # The piece cannot jump
@@ -91,7 +106,7 @@ class Board():
         """ Return all the possible moves going north from a specific position. """
         position = (row, column)
 
-        column_row = self.board[:, column] # Column of the row position
+        column_row = self.current_board[:, column] # Column of the row position
         start_row = row + 1 # The row where we begin to move
         movement_range = start_row + movement # Range of the movement
         
@@ -113,9 +128,9 @@ class Board():
         """ Return all the possible moves going west from a specific position. """
         position = (row, column)
 
-        row_column = self.board[row, :][::-1] # Row of the column position
+        row_column = self.current_board[row, :][::-1] # Row of the column position
         start_column = self.width - column # The column where we begin to move
-        original_column = self.width - 1 # As the row is reversed, this is the original_column
+        max_column = self.width - 1 # As the row is reversed, we use this to obtain the not reversed row
         movement_range = start_column + movement # Range of the movement
         
         if movement_range > self.width:
@@ -125,7 +140,7 @@ class Board():
             piece = row_column[i]
 
             if piece <= 0:
-                new_position = (row, original_column - i)
+                new_position = (row, max_column - i)
                 valid_moves.append([position, new_position])
             
             # The piece cannot jump
@@ -136,7 +151,7 @@ class Board():
         """ Return all the possible moves going east from a specific position. """
         position = (row, column)
 
-        row_column = self.board[row, :] # Row of the column position
+        row_column = self.current_board[row, :] # Row of the column position
         start_column = column + 1 # The column where we begin to move
         movement_range = start_column + movement # Range of the movement
         
