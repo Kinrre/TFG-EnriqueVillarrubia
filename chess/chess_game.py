@@ -26,7 +26,7 @@ class ChessGame(Game):
         pass
 
     def getValidMoves(self, board, player):
-        pass
+        return self.board.valid_moves(board)
 
     def getGameEnded(self, board, player):
         pass
