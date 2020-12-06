@@ -23,7 +23,8 @@ class ChessGame(Game):
         return self.board.action_size
 
     def getNextState(self, board, player, action):
-        pass
+        self.board.move(board, action)
+        return self.board.current_board, -player
 
     def getValidMoves(self, board, player):
         return self.board.valid_moves(board)
