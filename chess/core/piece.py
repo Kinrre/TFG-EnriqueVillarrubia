@@ -1,6 +1,11 @@
-from utils import WHITE, BLACK, PIECES, R_PIECES, MOVEMENTS
+from .utils import WHITE, BLACK, PIECES, R_PIECES, MOVEMENTS
+
 
 class Piece:
+    """
+    Piece of a chess.
+    NOTE: Only get_number and get_movement methods are used.
+    """
 
     def __init__(self, piece_type=None, color=None):
         self.piece_type = piece_type

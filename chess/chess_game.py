@@ -1,8 +1,8 @@
 import sys
-
+import numpy as np
 sys.path.append('..')
 from Game import Game
-from .Chess1Logic import Board
+from .core import Board
 
 
 class ChessGame(Game):
@@ -14,7 +14,7 @@ class ChessGame(Game):
         self.board = Board(height, width, fen)
 
     def getInitBoard(self):
-        return self.board.initial_board
+        return self.board.np_pieces
 
     def getBoardSize(self):
         return self.board.board_size
@@ -23,21 +23,35 @@ class ChessGame(Game):
         return self.board.action_size
 
     def getNextState(self, board, player, action):
-        self.board.move(board, action)
-        return self.board.current_board, -player
+        self.board.movements += 1
+        next_board = self.board.copy(np_pieces=board)
+        next_board.move(action)
+        return next_board.np_pieces, -player
 
     def getValidMoves(self, board, player):
-        return self.board.valid_moves(board)
+        next_board = self.board.copy(np_pieces=board)
+        return next_board.valid_moves()
 
     def getGameEnded(self, board, player):
-        pass
+        next_board = self.board.copy(np_pieces=board)
+        state = next_board.has_ended()
+
+        if state != 0:
+            self.board.movements = 0
+
+        return state
 
     def getCanonicalForm(self, board, player):
         # Swap player 1 to player -1
         return board * player
 
     def getSymmetries(self, board, pi):
-        pass
+        # Board is left/right board symmetric
+        return [(board, pi), (board[:, ::-1], pi[::-1])]
 
     def stringRepresentation(self, board):
-        return board.tostring()
+        return board.tostring() + bytes([self.board.movements])
+
+    @staticmethod
+    def display(board):
+        print(board)

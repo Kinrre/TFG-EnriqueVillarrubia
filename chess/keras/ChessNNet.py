@@ -3,9 +3,9 @@ sys.path.append('..')
 from utils import *
 
 import argparse
-from keras.models import *
-from keras.layers import *
-from keras.optimizers import *
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dense, Dropout, Reshape, Activation, Flatten
+from tensorflow.keras.optimizers import Adam
 
 class ChessNNet():
     def __init__(self, game, args):

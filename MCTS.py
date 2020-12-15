@@ -2,6 +2,7 @@ import logging
 import math
 
 import numpy as np
+import inspect
 
 EPS = 1e-8
 
@@ -25,6 +26,8 @@ class MCTS():
         self.Es = {}  # stores game.getGameEnded ended for board s
         self.Vs = {}  # stores game.getValidMoves for board s
 
+        self.movements_backup = 0 # NEW: Stores the original number of movements
+
     def getActionProb(self, canonicalBoard, temp=1):
         """
         This function performs numMCTSSims simulations of MCTS starting from
@@ -35,7 +38,9 @@ class MCTS():
                    proportional to Nsa[(s,a)]**(1./temp)
         """
         for i in range(self.args.numMCTSSims):
+            self.movements_backup = self.game.board.movements # NEW: Save the original number of movements
             self.search(canonicalBoard)
+            self.game.board.movements = self.movements_backup # NEW: Restore the original number of movements
 
         s = self.game.stringRepresentation(canonicalBoard)
         counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
@@ -71,13 +76,11 @@ class MCTS():
         Returns:
             v: the negative of the value of the current canonicalBoard
         """
-
         s = self.game.stringRepresentation(canonicalBoard)
 
         if s not in self.Es:
             self.Es[s] = self.game.getGameEnded(canonicalBoard, 1)
         if self.Es[s] != 0:
-            # terminal node
             return -self.Es[s]
 
         if s not in self.Ps:

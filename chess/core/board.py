@@ -1,9 +1,10 @@
 import numpy as np
-from piece import Piece
+from .piece import Piece
 
 DEFAULT_HEIGHT = 6
 DEFAULT_WIDTH = 6
-DEFAULT_BOARD = '1rqkr1/1pppp1/6/6/1PPPP1/1RQKR1'
+DEFAULT_BOARD = '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'
+DEFAULT_MAX_MOVEMENTS = 50
 
 
 class Board():
@@ -11,24 +12,33 @@ class Board():
     Chess board.
     """
 
-    def __init__(self, height=None, width=None, fen=None):
+    def __init__(self, height=None, width=None, fen=None, np_pieces=None, movements=0):
         """ Set up initial board configuration. """
         # TODO: Only with the fen string is necessary
         self.height = height or DEFAULT_HEIGHT
         self.width = width or DEFAULT_WIDTH
         self.fen = fen or DEFAULT_BOARD
 
-        self.initial_board = np.zeros([self.height, self.width], dtype=np.byte)
-        self.__create_board_from_fen()
-        self.current_board = np.copy(self.initial_board)
+        if np_pieces is None:
+            self.__create_board_from_fen()
+        else:
+            self.np_pieces = np_pieces
 
         self.board_size = self.__board_size()
         self.action_size = self.__action_size()
         self.square_index = self.height * self.width
+
+        self.movements = movements
+        self.max_movements = DEFAULT_MAX_MOVEMENTS
+
+    def copy(self, np_pieces):
+        """ Return a board with a copy by value of the pieces. """
+        if np_pieces is None:
+            np_pieces = np.copy(self.np_pieces)
+        return Board(self.height, self.width, self.fen, np.copy(np_pieces), self.movements)
         
-    def valid_moves(self, board):
+    def valid_moves(self):
         """ Returns all the valid movements for the current board. """
-        self.current_board = board
         valid_moves = np.zeros(self.action_size, dtype=np.byte)
 
         for row in range(self.height):
@@ -37,22 +47,49 @@ class Board():
 
         return valid_moves
 
-    def move(self, board, action):
-        """ Execute an action for the current board. """
-        # TODO: Check is a valid movement, maybe save valid_moves?
-        self.current_board = np.copy(board)
-
+    def move(self, action):
+        """ 
+        Execute an action for the current board.
+        NOTE: It does not check if the movement is valid.
+        """
         square = action // self.square_index
         original_position = np.unravel_index(square, self.board_size)
+        original_piece = self.np_pieces[original_position]
 
         new_square = action % self.square_index
         new_position = np.unravel_index(new_square, self.board_size)
 
-        self.current_board[new_position] = board[original_position]
-        self.current_board[original_position] = 0
+        self.np_pieces[new_position] = original_piece
+        self.np_pieces[original_position] = 0
+
+    def has_ended(self):
+        """
+        Returns the state of the game. Four values are possible, 0 if the game
+        has not finished, 1 if the player1 has win, -1 if the player1
+        has loss and 1e-4 if they have drawn.
+        """
+        state = 0
+
+        player1_npieces = self.np_pieces[self.np_pieces < 0].shape[0]
+        player2_npieces = self.np_pieces[self.np_pieces > 0].shape[0]
+        end_by_movements = self.movements >= self.max_movements
+
+        if np.all(self.np_pieces >= 0) or (player1_npieces > player2_npieces and end_by_movements):
+            # Win has a positive reward
+            state = 1
+        elif np.all(self.np_pieces <= 0) or (player1_npieces < player2_npieces and end_by_movements):
+            # Loss has a negative reward
+            state = -1
+        elif end_by_movements:
+            # Draw has a very little reward
+            state = 1e-4
+
+        return state
 
     def __create_board_from_fen(self):
         """ Create the board from a string in fen notation. """
+        self.np_pieces = np.zeros([self.height, self.width], dtype=np.byte)
+
         row = 0
         column = 0
 
@@ -63,7 +100,7 @@ class Board():
                 row += 1
                 column = 0
             else:
-                self.initial_board[row][column] = Piece.get_number(piece_type)
+                self.np_pieces[row][column] = Piece.get_number(piece_type)
                 column += 1
 
     def __board_size(self):
@@ -71,7 +108,10 @@ class Board():
         return (self.height, self.width)
 
     def __action_size(self):
-        """ Returns the action size of the board. """
+        """
+        Returns the action size of the board. It assume every piece can move to
+        any square.
+        """
         total_positions = self.height ** 2 * self.width ** 2
         # number_pieces = self.height * self.width
         return total_positions
@@ -79,10 +119,10 @@ class Board():
     def __valid_moves_square(self, row, column, valid_moves):
         """ Returns all the possible moves from a specific position. """
         # Only the player can move him pieces
-        if self.current_board[row][column] < 1:
+        if self.np_pieces[row][column] < 1:
             return
         
-        movements = Piece.get_movement(self.current_board[row][column])
+        movements = Piece.get_movement(self.np_pieces[row][column])
 
         for key, value in movements.items():
             if key == 'north':
@@ -98,7 +138,7 @@ class Board():
         """ Return all the possible moves going north from a specific position. """
         position = (row, column)
 
-        column_row = self.current_board[:, column][::-1] # Column of the row position
+        column_row = self.np_pieces[:, column][::-1] # Column of the row position
         start_row = self.height - row # The row where we begin to move
         max_row = self.height - 1 # As the column is reversed, we use this to obtain the not reversed row
         movement_range = start_row + movement # Range of the movement
@@ -121,7 +161,7 @@ class Board():
         """ Return all the possible moves going north from a specific position. """
         position = (row, column)
 
-        column_row = self.current_board[:, column] # Column of the row position
+        column_row = self.np_pieces[:, column] # Column of the row position
         start_row = row + 1 # The row where we begin to move
         movement_range = start_row + movement # Range of the movement
         
@@ -143,7 +183,7 @@ class Board():
         """ Return all the possible moves going west from a specific position. """
         position = (row, column)
 
-        row_column = self.current_board[row, :][::-1] # Row of the column position
+        row_column = self.np_pieces[row, :][::-1] # Row of the column position
         start_column = self.width - column # The column where we begin to move
         max_column = self.width - 1 # As the row is reversed, we use this to obtain the not reversed row
         movement_range = start_column + movement # Range of the movement
@@ -166,7 +206,7 @@ class Board():
         """ Return all the possible moves going east from a specific position. """
         position = (row, column)
 
-        row_column = self.current_board[row, :] # Row of the column position
+        row_column = self.np_pieces[row, :] # Row of the column position
         start_column = column + 1 # The column where we begin to move
         movement_range = start_column + movement # Range of the movement
         

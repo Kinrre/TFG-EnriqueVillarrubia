@@ -12,37 +12,31 @@ log = logging.getLogger(__name__)
 coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
 args = dotdict({
-    'numIters': 1000,
-    'numEps': 100,              # Number of complete self-play games to simulate during a new iteration.
-    'tempThreshold': 15,        #
+    'numIters': 100,
+    'numEps': 10,              # Number of complete self-play games to simulate during a new iteration.
+    'tempThreshold': 10,        #
     'updateThreshold': 0.6,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
-    'numMCTSSims': 25,          # Number of games moves for MCTS to simulate.
-    'arenaCompare': 40,         # Number of games to play during arena play to determine if new net will be accepted.
+    'numMCTSSims': 10,          # Number of games moves for MCTS to simulate.
+    'arenaCompare': 4,         # Number of games to play during arena play to determine if new net will be accepted.
     'cpuct': 1,
 
-    'checkpoint': './temp/',
+    'checkpoint': 'temp/',
     'load_model': False,
-    'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
+    'load_folder_file': ('temp/', 'best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
-
 })
 
 
 def main():
-    height = 6
-    width = 6
-    fen = '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'
-
     log.info('Loading %s...', Game.__name__)
-    g = Game(height, width, fen)
+    g = Game()
 
     log.info('Loading %s...', nn.__name__)
     nnet = nn(g)
 
-    
     if args.load_model:
-        log.info('Loading checkpoint "%s/%s"...', args.load_folder_file)
+        log.info('Loading checkpoint "%s/%s"...', args.load_folder_file[0], args.load_folder_file[1])
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
     else:
         log.warning('Not loading a checkpoint!')
@@ -56,7 +50,6 @@ def main():
 
     log.info('Starting the learning process 🎉')
     c.learn()
-
 
 if __name__ == "__main__":
     main()
