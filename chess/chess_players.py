@@ -30,10 +30,13 @@ class HumanChessPlayer():
             except ValueError:
                 print("That's not a number")
 
-            if valid_moves[move]:
-                break
-            else: 
-                print('Invalid move')
+            try:
+                if valid_moves[move]:
+                    break
+                else: 
+                    print('Invalid move')
+            except UnboundLocalError:
+                pass
 
         return move
 
