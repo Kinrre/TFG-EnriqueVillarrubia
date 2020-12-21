@@ -6,6 +6,7 @@ import random
 import numpy as np
 import math
 import sys
+from tensorflow.keras.callbacks import TensorBoard
 sys.path.append('../..')
 from utils import *
 from NeuralNet import NeuralNet
@@ -15,12 +16,13 @@ import argparse
 from .ChessNNet import ChessNNet as onnet
 
 args = dotdict({
-    'lr': 0.001,
+    'lr': 0.005,
     'dropout': 0.3,
     'epochs': 10,
     'batch_size': 64,
     'cuda': True,
     'num_channels': 512,
+    'log_dir': 'D:/modelos/chess/20-15-15-10',
 })
 
 class NNetWrapper(NeuralNet):
@@ -37,7 +39,9 @@ class NNetWrapper(NeuralNet):
         input_boards = np.asarray(input_boards)
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], batch_size = args.batch_size, epochs = args.epochs)
+        tensorboard = TensorBoard(log_dir=args.log_dir)
+        self.nnet.model.fit(x=input_boards, y=[target_pis, target_vs], batch_size=args.batch_size,
+                            epochs=args.epochs, callbacks=[tensorboard])
 
     def predict(self, board):
         """
