@@ -24,3 +24,6 @@
 - Reinforcement learning: An Introduction libro de bibiografía básica.
 - Paper resumen del libro: https://arxiv.org/pdf/2011.00583v1.pdf
 - Tipo de juego, números de jugadores, tamaño del tablero, tipos de fichas, número de fichas, movimientos, cómo se mata y cuándo acaba el juego.
+
+## 30/11/2020
+- Definir e implementar el primer juego
