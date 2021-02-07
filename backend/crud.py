@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 
+import bcrypt
+
 def get_user(db: Session, user_id: int):
     """Get a user from the database by his id."""
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -19,7 +21,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def create_user(db: Session, user: schemas.UserCreate):
     """Create a user to the database given a UserCreate schema."""
-    hashed_password = user.password
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(user.password.encode(), salt)
     db_user = models.User(username=user.username, password=hashed_password)
     db.add(db_user)
     db.commit()

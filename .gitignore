@@ -142,3 +142,6 @@ cython_debug/
 
 # Models files
 *.h5
+
+# Databases
+*.db
