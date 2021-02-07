@@ -12,8 +12,7 @@ class GameCreate(GameBase):
 
 
 class Game(GameBase):
-    """Complete game schema."""
-    id: int
+    """Complete game schema without id."""
     model: str
     owner_id: int
 
@@ -32,8 +31,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    """Complete user schema."""
-    id: int
+    """Complete user schema without id."""
     is_active: bool
     games: List[Game] = []
 

@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
+import re
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -25,6 +27,9 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     if db_user:
         raise HTTPException(status_code=400, detail='Username already registered')
+
+    if not re.match(r'\w+\Z', user.username):
+        raise HTTPException(status_code=400, detail='Username must only contains: letters, digits and underscore')
 
     return crud.create_user(db, user)
 

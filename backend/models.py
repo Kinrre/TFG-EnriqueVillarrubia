@@ -14,10 +14,6 @@ class User(Base):
 
     games = relationship('Game', back_populates='owner')
 
-    @validates('username')
-    def validate_username(self, key, field):
-        print(key, field, flush=True)
-
 
 class Game(Base):
     """Game database model."""
