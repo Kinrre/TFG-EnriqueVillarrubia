@@ -178,7 +178,7 @@ def test_change_password_invalid_token():
         '/api/v1/users/me',
         headers={'Authorization': f'Bearer {token}'},
     )
-    # NOTE: This must not work but as JWT are stateless it works
+    # NOTE: This must not work but as JWT tokens are stateless it works
     assert response.status_code == 200
 
 
