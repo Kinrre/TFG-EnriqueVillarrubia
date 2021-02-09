@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from backend import models, schemas
 
 import bcrypt
 
@@ -23,32 +23,23 @@ def create_user(db: Session, user: schemas.UserCreate):
     """Create a user to the database given a UserCreate schema."""
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(user.password.encode(), salt)
+    
     db_user = models.User(username=user.username, password=hashed_password)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
     return db_user
 
 
-def get_game(db: Session, game_id: int):
-    """Get a game from the database by his id."""
-    return db.query(models.Game).filter(models.Game.id == game_id).first()
-
-
-def get_game_by_name(db: Session, name: str):
-    """Get a game from the database by his name."""
-    return db.query(models.Game).filter(models.Game.name == name).first()   
-
-
-def get_games(db: Session, skip: int = 0, limit: int = 100):
-    """Get multiple games within a given offset and limit."""
-    return db.query(models.Game).offset(skip).limit(limit).all()
-
-
-def create_user_game(db: Session, game: schemas.GameCreate, user_id: int):
-    """Create a game to the database given a GameCreate schema and the owner."""
-    db_game = models.Game(**game.dict(), owner_id=user_id)
-    db.add(db_game)
+def update_password(db: Session, new_password: str, user: schemas.UserCreate):
+    """Update the password of a user to the database."""
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(new_password.encode(), salt)
+    
+    db_user = get_user_by_username(db, user.username)
+    db_user.password = hashed_password
     db.commit()
-    db.refresh(db_game)
-    return db_game
+    db.refresh(db_user)
+
+    return db_user
