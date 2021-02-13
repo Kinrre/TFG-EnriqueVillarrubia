@@ -3,12 +3,23 @@ sys.path.append('..')
 from utils import *
 
 import argparse
+import tensorflow as tf
+
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dense, Dropout, Reshape, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
 
 class ChessNNet():
     def __init__(self, game, args):
+        # Memory growth
+        physical_devices = tf.config.list_physical_devices('GPU')
+        try:
+            #tf.config.experimental.set_memory_growth(physical_devices[0], True)
+            tf.config.experimental.set_virtual_device_configuration(physical_devices[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2048)])
+        except:
+            # Invalid device or cannot modify virtual devices once initialized.
+            pass
+
         # game params
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
