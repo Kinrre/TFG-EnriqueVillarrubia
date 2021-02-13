@@ -16,4 +16,4 @@ PIECES = {'p': -PAWN, 'k': -KNIGHT, 'b': -BISHOP, 'r': -ROOK, 'q': -QUEEN, 'k': 
           'P': PAWN, 'K': KNIGHT, 'B': BISHOP, 'R': ROOK, 'Q': QUEEN, 'K': KING}
 R_PIECES = {PAWN: 'p', KNIGHT: 'k', BISHOP: 'b', ROOK: 'r', QUEEN: 'q', KING: 'k'}
 
-MOVEMENTS = {PAWN: {'north': 2, 'south': 2, 'west': 2, 'east': 2}}
+MOVEMENTS = {PAWN: {'north': 2, 'south': 2, 'west': 2, 'east': 2, 'south-east': 1}}

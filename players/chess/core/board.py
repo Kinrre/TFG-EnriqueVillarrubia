@@ -133,6 +133,8 @@ class Board():
                 self.__valid_moves_west(row, column, valid_moves, value)
             elif key == 'east':
                 self.__valid_moves_east(row, column, valid_moves, value)
+            #elif key == 'south-east':
+            #    self.__valid_moves_south_east(row, column, valid_moves, value)
 
     def __valid_moves_north(self, row, column, valid_moves, movement):
         """ Return all the possible moves going north from a specific position. """
@@ -224,6 +226,30 @@ class Board():
             if piece < 0 or piece > 0:
                 break
     
+    def __valid_moves_south_east(self, row, column, valid_moves, movement):
+        """ Return all the possible moves going south east from a specific position. """
+        position = (row, column)
+        kth_diagonal = column - row
+
+        diagonal = np.diag(self.np_pieces, k=kth_diagonal)
+        length_diagonal = diagonal.shape[0]
+        start_column = column + 1 - kth_diagonal
+        movement_range = start_column + movement
+
+        if movement_range > length_diagonal:
+            movement_range = length_diagonal
+
+        for i in range(start_column, movement_range):
+            piece = diagonal[i]
+
+            if piece <= 0:
+                new_position = (i, i - row)
+                self.__register_valid_move(position, new_position, valid_moves)
+            
+            # The piece cannot jump
+            if piece < 0 or piece > 0:
+                break
+
     def __register_valid_move(self, position, new_position, valid_moves):
         """ Register a valid move. """
         position_index = np.ravel_multi_index(position, self.board_size)
