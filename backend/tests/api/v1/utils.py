@@ -22,3 +22,13 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
+
+def login(username: str, password: str):
+    response = client.post(
+        '/api/v1/auth/token',
+        data={'grant_type': 'password', 'username': username, 'password': password}
+    )
+
+    token = response.json().get('access_token', '')
+
+    return token

@@ -16,7 +16,7 @@ def test_create_valid_user():
         json={'username': 'Enrique', 'password': '123'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
 
 def test_valid_login():

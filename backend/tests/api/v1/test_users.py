@@ -1,5 +1,5 @@
 from backend.database import Base
-from .utils import client, engine
+from .utils import client, engine, login
 
 import pytest
 
@@ -15,7 +15,7 @@ def test_create_valid_user_1():
         json={'username': 'Enrique', 'password': '123'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
 
 def test_create_valid_user_2():
@@ -25,7 +25,7 @@ def test_create_valid_user_2():
         json={'username': 'me', 'password': '123'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Me', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 2, 'username': 'Me', 'is_active': True, 'games': []}
 
 
 def test_create_invalid_username_1():
@@ -53,7 +53,7 @@ def test_create_duplicated_username_1():
         json={'username': 'Enrique1', 'password': '123'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique1', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 3, 'username': 'Enrique1', 'is_active': True, 'games': []}
 
     response = client.post(
         '/api/v1/users/',
@@ -69,7 +69,7 @@ def test_create_duplicated_username_2():
         json={'username': 'Enrique2', 'password': '123'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique2', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 4, 'username': 'Enrique2', 'is_active': True, 'games': []}
 
     response = client.post(
         '/api/v1/users/',
@@ -102,7 +102,7 @@ def test_read_valid_user():
         '/api/v1/users/Enrique',
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
 
 def test_read_invalid_user():
@@ -113,17 +113,6 @@ def test_read_invalid_user():
     assert response.status_code == 404
 
 
-def login(username: str, password: str):
-    response = client.post(
-        '/api/v1/auth/token',
-        data={'grant_type': 'password', 'username': username, 'password': password}
-    )
-
-    token = response.json().get('access_token', '')
-
-    return token
-
-
 def test_read_current_user():
     """Test to read the current user."""
     token = login('Enrique', '123')
@@ -132,7 +121,7 @@ def test_read_current_user():
         headers={'Authorization': f'Bearer {token}'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
 
 def test_read_current_user_not_logged():
@@ -152,7 +141,7 @@ def test_change_password():
         json={'new_password': '1234'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
     token = login('Enrique', '1234')
     response = client.get(
@@ -160,7 +149,7 @@ def test_change_password():
         headers={'Authorization': f'Bearer {token}'},
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
 
 def test_change_password_invalid_token():
@@ -172,7 +161,7 @@ def test_change_password_invalid_token():
         json={'new_password': '12345'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
     response = client.get(
         '/api/v1/users/me',
@@ -191,7 +180,7 @@ def test_change_password_changes():
         json={'new_password': '123456'}
     )
     assert response.status_code == 200
-    assert response.json() == {'username': 'Enrique', 'is_active': True, 'games': []}
+    assert response.json() == {'id': 1, 'username': 'Enrique', 'is_active': True, 'games': []}
 
     token = login('Enrique', '12345')
     response = client.get(
@@ -206,5 +195,22 @@ def test_change_password_not_logged():
     response = client.put(
         '/api/v1/users/me',
         json={'new_password': '1234'}
+    )
+    assert response.status_code == 401
+
+
+def test_delete_user():
+    """Test to delete a user."""
+    token = login('Enrique', '123456')
+    response = client.delete(
+        '/api/v1/users/me',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+    assert response.status_code == 204
+    assert response.json() == None
+
+    response = client.get(
+        '/api/v1/users/me',
+        headers={'Authorization': f'Bearer {token}'},
     )
     assert response.status_code == 401

@@ -13,8 +13,10 @@ class UserCreate(UserBase):
     password: str
 
 
-class User(UserBase):
-    """Complete user schema without id."""
+class User(BaseModel):
+    """Complete user schema."""
+    id: int
+    username: str
     is_active: bool
     games: List[Game] = []
 
