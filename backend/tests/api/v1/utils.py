@@ -5,10 +5,10 @@ from sqlalchemy.orm import sessionmaker
 from backend.api.dependencies import get_db
 from backend.main import app
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///backend/tests/test.db"
+SQLALCHEMY_DATABASE_URL = 'postgresql://jhtw6nsf:475fa74c47d1@localhost:5432/test'
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

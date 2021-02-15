@@ -10,7 +10,7 @@ def auth_user(db: Session, user: schemas.UserCreate):
     valid_password = False
 
     if db_user:
-        valid_password = bcrypt.checkpw(user.password.encode(), db_user.password)
+        valid_password = bcrypt.checkpw(user.password.encode(), db_user.password.encode())
 
     if not valid_password:
         db_user = None
