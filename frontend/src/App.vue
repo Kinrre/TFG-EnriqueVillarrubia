@@ -1,6 +1,6 @@
 <template>
   <div id="app" :style="div_size">
-    <Board/>
+    <Board :boardSize="8" :fen="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'"/>
   </div>
 </template>
 
@@ -28,10 +28,9 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.onResize)
-    
+
     // Resize first time
-    this.div_size.height = innerHeight + 'px'
-    this.div_size.width = innerWidth + 'px'
+    this.onResize()
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
