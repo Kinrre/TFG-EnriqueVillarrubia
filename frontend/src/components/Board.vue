@@ -1,15 +1,18 @@
 <template>
   <div :style="board_style">
-    <Piece v-for="piece in pieces" v-bind:props_style="piece.props_style" :key="piece.id"/>
+    <Coordinates :boardSize="boardSize"/>
+    <Piece v-for="piece in pieces" v-bind:props_style="piece" :key="piece.id"/>
   </div>
 </template>
 
 <script>
+import Coordinates from './Coordinates.vue'
 import Piece from './Piece.vue'
 
 export default {
   name: 'Board',
   components: {
+    Coordinates,
     Piece
   },
   props: {
@@ -28,11 +31,8 @@ export default {
         backgroundSize: 'contain',
         pointerEvents: 'none'
       },
-      pieces: {}
+      pieces: this.piecesFromFen()
     }
-  },
-  created() {
-    this.pieces = this.piecesFromFen()
   },
   methods: {
     onResize() {
@@ -56,7 +56,7 @@ export default {
       var row = 0, column = 0
 
       for (let piece_type = 0; piece_type < this.fen.length; piece_type++) {
-        var piece = {props_style: {}}, char_piece
+        var piece = {}, char_piece
         char_piece = this.fen.charAt(piece_type)
         
         if (parseInt(char_piece)) {
@@ -65,11 +65,11 @@ export default {
           row += 1
           column = 0
         } else {
-          piece.props_style.piece = char_piece
-          piece.props_style.color = this.isLower(char_piece) ? 'black' : 'white'
-          piece.props_style.size = 100 / this.boardSize
-          piece.props_style.offsetX = 100 * column
-          piece.props_style.offsetY = 100 * row
+          piece.piece = char_piece
+          piece.color = this.isLower(char_piece) ? 'black' : 'white'
+          piece.size = 100 / this.boardSize
+          piece.offsetX = 100 * column
+          piece.offsetY = 100 * row
           pieces.push(piece)
 
           column += 1
