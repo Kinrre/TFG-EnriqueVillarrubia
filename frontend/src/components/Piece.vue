@@ -57,7 +57,7 @@ export default {
       this.style.cursor = 'grab'
 
       // Center the piece into a square
-      
+      this.correctPosition()
     },
     movePiece(event) {
       // Ensure that we have a parent element
@@ -101,6 +101,18 @@ export default {
       }
 
       return [offsetX, offsetY]
+    },
+    correctPosition() {
+      // Correct the position of a piece centering in a square
+      var offsets = this.style.transform.match(/[+-]?\d+(\.\d+)?/g)
+      var offsetX = offsets[0]
+      var offsetY = offsets[1]
+
+      offsetX = Math.round(offsetX / 100) * 100
+      offsetY = Math.round(offsetY / 100) * 100
+
+      // Update the position
+      this.style.transform = 'translate(' + offsetX + '%, ' + offsetY + '%)'
     },
     getPiece() {
       // Get the piece background image
