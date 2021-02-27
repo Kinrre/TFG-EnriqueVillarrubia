@@ -1,7 +1,7 @@
 <template>
-  <div :style="board_style">
+  <div :style="style">
     <Coordinates :boardSize="boardSize"/>
-    <Piece v-for="piece in pieces" v-bind:props_style="piece" :key="piece.id"/>
+    <Piece v-for="piece in pieces" v-bind:boardSize="boardSize" v-bind:props_style="piece" :key="piece.id"/>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      board_style: {
+      style: {
         height: 'auto',
         width: '100%',
         position: 'relative',
@@ -38,11 +38,11 @@ export default {
     onResize() {
       // Ensure the div is a perfect square
       if (innerHeight > innerWidth) {
-        this.board_style.height = innerWidth + 'px'
-        this.board_style.width = innerWidth + 'px'
+        this.style.height = innerWidth + 'px'
+        this.style.width = innerWidth + 'px'
       } else {
-        this.board_style.height = innerHeight + 'px'
-        this.board_style.width = innerHeight + 'px'
+        this.style.height = innerHeight + 'px'
+        this.style.width = innerHeight + 'px'
       }
     },
     isLower(character) {

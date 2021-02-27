@@ -1,11 +1,12 @@
 <template>
-  <div :style="piece_style"></div>
+  <div :style="style"></div>
 </template>
 
 <script>
 export default {
   name: 'Piece',
   props: {
+    boardSize: Number,
     props_style: {
       piece: String,
       color: String,
@@ -16,7 +17,8 @@ export default {
   },
   data() {
     return {
-      piece_style: {
+      dragging: false,
+      style: {
         height: this.props_style.size + '%',
         width: this.props_style.size + '%',
         position: 'absolute',
@@ -27,8 +29,7 @@ export default {
         userSelect: 'none',
         willChange: 'transform', // Performance boost
         cursor: 'grab'
-      },
-      dragging: false
+      }
     }
   },
   methods: {
@@ -38,7 +39,7 @@ export default {
 
       // Change the cursor to grab and tell that we are grabbing the piece
       this.dragging = true
-      this.piece_style.cursor = 'grabbing'
+      this.style.cursor = 'grabbing'
 
       // Center the piece into the cursor
       this.movePiece(event)
@@ -53,7 +54,7 @@ export default {
     onMouseUp() {
       // Undo the cursor
       this.dragging = false
-      this.piece_style.cursor = 'grab'
+      this.style.cursor = 'grab'
     },
     movePiece(event) {
       // Get the bounds of the board
@@ -64,7 +65,7 @@ export default {
       var offsetY = event.clientY - board_bounds.top - this.$el.clientHeight / 2
 
       // Update the position
-      this.piece_style.transform = 'matrix(1, 0, 0, 1, ' + offsetX + ', ' + offsetY + ')'
+      this.style.transform = 'matrix(1, 0, 0, 1, ' + offsetX + ', ' + offsetY + ')'
 
       return [offsetX, offsetY]
     },

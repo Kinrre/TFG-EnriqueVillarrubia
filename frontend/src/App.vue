@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :style="div_size">
+  <div id="app" :style="style">
     <Board :boardSize="8" :fen="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'"/>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      div_size: {
+      style: {
         height: 'auto',
         width: '100%'
       }
@@ -23,8 +23,8 @@ export default {
   methods: {
     onResize() {
       // Set the size of the outter div to the viewport size
-      this.div_size.height = innerHeight + 'px'
-      this.div_size.width = innerWidth + 'px'
+      this.style.height = innerHeight + 'px'
+      this.style.width = innerWidth + 'px'
     }
   },
   mounted() {

@@ -1,5 +1,5 @@
 <template>
-  <svg viewbox="0 0 100 100" :style="coordinate_style">
+  <svg viewbox="0 0 100 100" :style="style">
     <TextCoordinate v-for="text in texts" v-bind:props_style="text" :key="text.id"/>
   </svg>
 </template>
@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      coordinate_style: {
+      style: {
         height: '100%',
         width: '100%',
         position: 'absolute'
