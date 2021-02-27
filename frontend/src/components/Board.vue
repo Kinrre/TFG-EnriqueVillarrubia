@@ -29,7 +29,7 @@ export default {
         backgroundImage: this.getBoard(),
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
-        pointerEvents: 'none'
+        userSelect: 'none'
       },
       pieces: this.piecesFromFen()
     }
@@ -46,12 +46,15 @@ export default {
       }
     },
     isLower(character) {
+      // Check if a character is lowercase
       return (character === character.toLowerCase()) && (character !== character.toUpperCase())
     },
     getBoard() {
+      // Get the board background image
       return 'url(' + require('@/assets/boards/' + this.boardSize + 'x' + this.boardSize + '_board.png') + ')'
     },
     piecesFromFen() {
+      // Create pieces components from a fen string
       var pieces = []
       var row = 0, column = 0
 
@@ -76,7 +79,7 @@ export default {
         }
       }
 
-      return pieces;
+      return pieces
     }
   },
   mounted() {

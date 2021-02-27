@@ -27,6 +27,7 @@ export default {
   },
   methods: {
     getTexts() {
+      // Create TextCoordinate components for the current board
       var texts = []
 
       for (let i = 0; i < this.boardSize; i++) {

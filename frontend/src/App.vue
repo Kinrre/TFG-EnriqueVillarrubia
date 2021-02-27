@@ -22,6 +22,7 @@ export default {
   },
   methods: {
     onResize() {
+      // Set the size of the outter div to the viewport size
       this.div_size.height = innerHeight + 'px'
       this.div_size.width = innerWidth + 'px'
     }
@@ -45,5 +46,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: white;
   background-color: rgb(49, 46, 43);
+  overflow: hidden;
 }
 </style>
