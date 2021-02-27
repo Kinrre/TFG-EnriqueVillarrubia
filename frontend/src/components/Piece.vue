@@ -6,6 +6,7 @@
 export default {
   name: 'Piece',
   props: {
+    boardSize: Number,
     props_style: {
       piece: String,
       color: String,
@@ -51,24 +52,53 @@ export default {
       this.movePiece(event)
     },
     onMouseUp() {
-      // Undo the cursor
+      // Undo the cursor and tell that ww are not grabbing the piece
       this.dragging = false
       this.style.cursor = 'grab'
+
+      // Center the piece into a square
+      
     },
     movePiece(event) {
+      // Ensure that we have a parent element
+      if (!event.target.parentElement) return
+
       // Get the bounds of the board
-      var board_bounds = event.target.parentElement.getBoundingClientRect()
+      var boardBounds = event.target.parentElement.getBoundingClientRect()
 
       // Calculate the new raw offsets positions centering the piece into the mouse
-      var rawOffsetX = event.clientX - board_bounds.left - this.$el.clientWidth / 2
-      var rawOffsetY = event.clientY - board_bounds.top - this.$el.clientHeight / 2
+      var rawOffsetX = event.clientX - boardBounds.left - this.$el.clientWidth / 2
+      var rawOffsetY = event.clientY - boardBounds.top - this.$el.clientHeight / 2
 
       // Calculating the new relative offsets
       var offsetX = rawOffsetX * 100 / this.$el.clientWidth
       var offsetY = rawOffsetY * 100 / this.$el.clientHeight
 
+      // Ensure that we are not outside the limits of the board
+      var checkedOffsets = this.checkBounds(offsetX, offsetY)
+      offsetX = checkedOffsets[0]
+      offsetY = checkedOffsets[1]
+
       // Update the position
       this.style.transform = 'translate(' + offsetX + '%, ' + offsetY + '%)'
+    },
+    checkBounds(offsetX, offsetY) {
+      // Check the bounds of the board size
+      var limit = 100 * (this.boardSize - 1)
+
+      // Check the X axis
+      if (offsetX > limit) {
+        offsetX = limit
+      } else if (offsetX < 0) {
+        offsetX = 0
+      }
+      
+      // Check the Y axis
+      if (offsetY > limit) {
+        offsetY = limit
+      } else if (offsetY < 0) {
+        offsetY = 0
+      }
 
       return [offsetX, offsetY]
     },

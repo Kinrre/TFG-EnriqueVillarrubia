@@ -1,7 +1,7 @@
 <template>
   <div :style="style">
     <Coordinates :boardSize="boardSize"/>
-    <Piece v-for="piece in pieces" v-bind:props_style="piece" :key="piece.id"/>
+    <Piece v-for="piece in pieces" v-bind:boardSize="boardSize" v-bind:props_style="piece" :key="piece.id"/>
   </div>
 </template>
 
