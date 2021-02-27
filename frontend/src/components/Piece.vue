@@ -6,7 +6,6 @@
 export default {
   name: 'Piece',
   props: {
-    boardSize: Number,
     props_style: {
       piece: String,
       color: String,
@@ -60,12 +59,16 @@ export default {
       // Get the bounds of the board
       var board_bounds = event.target.parentElement.getBoundingClientRect()
 
-      // Calculate the new offsets positions centering the piece into the mouse
-      var offsetX = event.clientX - board_bounds.left - this.$el.clientWidth / 2
-      var offsetY = event.clientY - board_bounds.top - this.$el.clientHeight / 2
+      // Calculate the new raw offsets positions centering the piece into the mouse
+      var rawOffsetX = event.clientX - board_bounds.left - this.$el.clientWidth / 2
+      var rawOffsetY = event.clientY - board_bounds.top - this.$el.clientHeight / 2
+
+      // Calculating the new relative offsets
+      var offsetX = rawOffsetX * 100 / this.$el.clientWidth
+      var offsetY = rawOffsetY * 100 / this.$el.clientHeight
 
       // Update the position
-      this.style.transform = 'matrix(1, 0, 0, 1, ' + offsetX + ', ' + offsetY + ')'
+      this.style.transform = 'translate(' + offsetX + '%, ' + offsetY + '%)'
 
       return [offsetX, offsetY]
     },
