@@ -56,7 +56,7 @@ export default {
     piecesFromFen() {
       // Create pieces components from a fen string
       var pieces = []
-      var row = 0, column = 0
+      var row = 0, column = 0, id = 0
 
       for (let piece_type = 0; piece_type < this.fen.length; piece_type++) {
         var piece = {}, char_piece
@@ -68,6 +68,7 @@ export default {
           row += 1
           column = 0
         } else {
+          piece.id = id
           piece.piece = char_piece
           piece.color = this.isLower(char_piece) ? 'black' : 'white'
           piece.size = 100 / this.boardSize
@@ -76,10 +77,15 @@ export default {
           pieces.push(piece)
 
           column += 1
+          id += 1
         }
       }
 
       return pieces
+    },
+    removePiece(index) {
+      // Remove a piece given his index
+      this.pieces.splice(index, 1)
     }
   },
   mounted() {

@@ -6,6 +6,7 @@
 export default {
   name: 'Piece',
   props: {
+    id: Number,
     boardSize: Number,
     props_style: {
       piece: String,
@@ -52,12 +53,18 @@ export default {
       this.movePiece(event)
     },
     onMouseUp() {
+      // Ensure we are dragging the component
+      if (!this.dragging) return
+
       // Undo the cursor and tell that ww are not grabbing the piece
       this.dragging = false
       this.style.cursor = 'grab'
 
       // Center the piece into a square
-      this.correctPosition()
+      this.centerPiece()
+
+      // Delete the piece in the same square (capture the piece)
+      this.capturePiece()
     },
     movePiece(event) {
       // Ensure that we have a parent element
@@ -102,7 +109,7 @@ export default {
 
       return [offsetX, offsetY]
     },
-    correctPosition() {
+    centerPiece() {
       // Correct the position of a piece centering in a square
       var offsets = this.style.transform.match(/[+-]?\d+(\.\d+)?/g)
       var offsetX = offsets[0]
@@ -114,9 +121,27 @@ export default {
       // Update the position
       this.style.transform = 'translate(' + offsetX + '%, ' + offsetY + '%)'
     },
+    capturePiece() {
+      // Get the component children of the board
+      var children = this.$parent.$children
+
+      // Index zero are the coordinates, so we start in the index one
+      for (var i = 1; i < children.length; i++) {
+        var child = children[i]
+
+        // The position is the same and the component is different
+        if (this._uid != child._uid && this.getStyle().transform == child.getStyle().transform) {
+          this.$parent.removePiece(i - 1)
+        }
+      }
+    },
     getPiece() {
       // Get the piece background image
       return 'url(' + require('@/assets/pieces/' + this.props_style.color + '/' + this.props_style.color + '_' + this.props_style.piece + '.png') + ')'
+    },
+    getStyle() {
+      // Return the style of the piece
+      return this.style
     }
   },
   mounted() {
