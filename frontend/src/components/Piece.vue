@@ -64,7 +64,10 @@ export default {
       this.centerPiece()
 
       // Delete the piece in the same square (capture the piece)
-      this.capturePiece()
+      var hasCaptured = this.capturePiece()
+
+      // Play the corresponding sound
+      this.playSound(hasCaptured)
     },
     movePiece(event) {
       // Ensure that we have a parent element
@@ -124,6 +127,7 @@ export default {
     capturePiece() {
       // Get the component children of the board
       var children = this.$parent.$children
+      var hasCaptured = false
 
       // Index zero are the coordinates, so we start in the index one
       for (var i = 1; i < children.length; i++) {
@@ -132,8 +136,25 @@ export default {
         // The position is the same and the component is different
         if (this._uid != child._uid && this.getStyle().transform == child.getStyle().transform) {
           this.$parent.removePiece(i - 1)
+          hasCaptured = true
         }
       }
+
+      return hasCaptured
+    },
+    playSound(hasCaptured) {
+      // Play different sound depending if the piece has captured another piece or not
+      var audio
+
+      if (hasCaptured) {
+        audio = new Audio(require('@/assets/sounds/capture.webm'))
+      } else if (this.props_style.color == "white") {
+        audio = new Audio(require('@/assets/sounds/move-self.webm'))
+      } else if (this.props_style.color == "black") {
+        audio = new Audio(require('@/assets/sounds/move-opponent.webm'))
+      }
+
+      audio.play()
     },
     getPiece() {
       // Get the piece background image
