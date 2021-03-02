@@ -80,6 +80,9 @@ export default {
       var rawOffsetX = event.clientX - boardBounds.left - this.$el.clientWidth / 2
       var rawOffsetY = event.clientY - boardBounds.top - this.$el.clientHeight / 2
 
+      // Left overflow bug prevention
+      rawOffsetX = this.leftOverflow(event, rawOffsetX)
+
       // Calculating the new relative offsets
       var offsetX = rawOffsetX * 100 / this.$el.clientWidth
       var offsetY = rawOffsetY * 100 / this.$el.clientHeight
@@ -91,6 +94,17 @@ export default {
 
       // Update the position
       this.style.transform = 'translate(' + offsetX + '%, ' + offsetY + '%)'
+    },
+    leftOverflow(event, rawOffsetX) {
+      // Checking if we outside the board in the left part and correct it
+      var marginLeft = window.getComputedStyle(this.$parent.$el).getPropertyValue('margin-left')
+      marginLeft = parseInt(marginLeft)
+
+      if (event.clientX < marginLeft) {
+        rawOffsetX = 0
+      }
+
+      return rawOffsetX
     },
     checkBounds(offsetX, offsetY) {
       // Check the bounds of the board size
