@@ -19,6 +19,7 @@ class GameUpdate(BaseModel):
 
 class Game(GameBase):
     """Complete game schema without id."""
+    id: int
     model: str
     owner_id: int
     trained: bool = False

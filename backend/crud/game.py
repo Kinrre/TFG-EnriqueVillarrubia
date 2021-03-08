@@ -35,6 +35,14 @@ def get_games_current_user(db: Session, current_user: schemas.User, skip: int = 
     return db_games
 
 
+def get_game_by_id(db: Session, game_id: int):
+    """Get a game from the database by his id."""
+    db_game = db.query(models.Game).filter(
+        models.Game.id == game_id
+    ).first()
+    return db_game
+
+
 def get_game_by_name(db: Session, name: str, current_user: schemas.User):
     """Get a game from the database by his name."""
     db_game = db.query(models.Game).filter(
