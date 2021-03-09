@@ -1,18 +1,12 @@
 <template>
   <div id="app" :style="style">
-    <Board :boardSize="8" :fen="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'"/>
-    <!--<Board :boardSize="5" :fen="'bqkbn/ppppp/5/PPPPP/BQKBN'"/>-->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Board from './components/Board.vue'
-
 export default {
   name: 'App',
-  components: {
-    Board
-  },
   data() {
     return {
       style: {
