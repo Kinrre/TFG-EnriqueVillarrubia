@@ -25,12 +25,14 @@ def test_create_valid_game():
     response = client.post(
         '/api/v1/users/me/games/',
         headers={'Authorization': f'Bearer {token}'},
-        json={'name': 'chess'}
+        json={'name': 'chess', 'board_size': 6, 'fen': '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'}
     )
     assert response.status_code == 200
     assert response.json()['name'] == 'Chess'
     assert response.json()['owner_id'] == 1
     assert response.json()['trained'] == False
+    assert response.json()['board_size'] == 6
+    assert response.json()['fen'] == '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'
 
 
 def test_create_invalid_game_1():
@@ -39,7 +41,7 @@ def test_create_invalid_game_1():
     response = client.post(
         '/api/v1/users/me/games/',
         headers={'Authorization': f'Bearer {token}'},
-        json={'name': 'che|ss'}
+        json={'name': 'che|ss', 'board_size': 6, 'fen': '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'}
     )
     assert response.status_code == 400
 
@@ -50,7 +52,7 @@ def test_create_invalid_game_2():
     response = client.post(
         '/api/v1/users/me/games/',
         headers={'Authorization': f'Bearer {token}'},
-        json={'name': 'chess   '}
+        json={'name': 'chess   ', 'board_size': 6, 'fen': '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'}
     )
     assert response.status_code == 400
 

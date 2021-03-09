@@ -4,6 +4,8 @@ from pydantic import BaseModel
 class GameBase(BaseModel):
     """Base game schema."""
     name: str
+    board_size: int
+    fen: str
 
 
 class GameCreate(GameBase):

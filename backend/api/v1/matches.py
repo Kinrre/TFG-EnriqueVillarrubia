@@ -18,7 +18,7 @@ def create_match(game_id: int, current_user: schemas.User = Depends(get_current_
     
     match = schemas.MatchCreate(player1=current_user.id, game=game_id)
 
-    return crud.create_matchup(db, match)
+    return crud.create_match(db, match)
 
 
 @router.put('/api/v1/matches/{match_id}', response_model=schemas.Match, tags=['matches'])
