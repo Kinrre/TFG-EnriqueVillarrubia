@@ -2,6 +2,7 @@ import axios from 'axios'
 import Vue from 'vue'
 
 const URL_GAME = 'http://localhost:8000/api/v1/matches/?game_id='
+const URL_MATCH = 'http://localhost:8000/api/v1/matches/'
 const HTTP_NOT_FOUND = 404
 
 export default {
@@ -9,7 +10,9 @@ export default {
     roomCode: null,
     isRoomCreated: false,
     boardSize: null,
-    fen: null
+    fen: null,
+    player1: null,
+    player2: null
   },
   getters: {
     getRoomCode(state) {
@@ -38,6 +41,23 @@ export default {
         return
       }
 
+      context.dispatch('commitRoom', response)
+    },
+    async joinRoom(context, payload) {
+      var url = URL_MATCH + '?room_code=' + payload.roomCode
+
+      try {
+        var response = await axios.get(url)
+      } catch (error) {
+        if (error.response.status == HTTP_NOT_FOUND) {
+          Vue.swal('Room not found!', 'Check the invite link is valid.', 'error')
+        }
+        return
+      }
+
+      context.dispatch('commitRoom', response)
+    },
+    commitRoom(context, response) {
       var roomInfo = {
         'roomCode': response.data.room_code,
         'boardSize': response.data.game.board_size,

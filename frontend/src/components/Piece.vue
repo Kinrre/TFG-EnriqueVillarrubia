@@ -36,6 +36,7 @@ export default {
   methods: {
     onMouseDown(event) {
       // Ensure we only execute in the clicked component
+      if (!event.target.__vue__) return
       if (event.target.__vue__._uid != this._uid) return
 
       // Change the cursor to grab and tell that we are grabbing the piece

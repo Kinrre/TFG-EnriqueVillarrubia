@@ -3,37 +3,60 @@
     <h1>Tester</h1>
     <input type="text" placeholder="username" class="home-input" id="username" required="required">
     <input type="password" placeholder="password" class="home-input" id="password" required="required">
-    <button v-on:click="createRoom" type="button" class="home-button">join room</button>
+    <button v-on:click="joinRoom" type="button" class="home-button">join room</button>
   </div>
 </template>
 
 <script>
-import Client from '../mixins/Client.js'
-
 export default {
   name: 'Home',
-  mixins: [Client],
   methods: {
-    async createRoom() {
-      // Join a created room
+    async joinRoom() {
+      // Join a room
       var username = document.getElementById('username').value
       var password = document.getElementById('password').value
 
-      if (!username) return
-      if (!password) return
+      if (!username || !password) {
+        this.$swal('Missing values!', 'Check that you have filled all the fields.', 'warning')
+        return
+      }
 
-      var gameId = 'a'
-      var roomMetaData = await this.getGameMetaDataJoin(gameId)
-      
+      await this.login()
 
-      if (!roomMetaData) return
+      if (this.$store.getters.isAuthenticated) {
+        await this.registerRoom()
+      }
 
-      // update player2
-
+      if (this.$store.getters.isRoomCreated) {
+        this.redirectToRoom()
+      }
+    },
+    getCredentials() {
+      // Get the credentials from the user
+      var username = document.getElementById('username').value
+      var password = document.getElementById('password').value
+      return {'username': username, 'password': password}
+    },
+    async login() {
+      // Login into the backend
+      var credentials = this.getCredentials()
+      await this.$store.dispatch('login', credentials)
+    },
+    async registerRoom() {
+      var roomCode = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+      var payload = {'roomCode': roomCode}
+      await this.$store.dispatch('joinRoom', payload)
+    },
+    redirectToRoom() {
+      // Redirect to the room created
       var room = {
         name: 'Room',
-        path: '/room/' + roomMetaData.roomCode,
-        params: roomMetaData
+        path: '/room/' + this.$store.getters.getRoomCode,
+        params: {
+          'roomCode': this.$store.getters.getRoomCode,
+          'boardSize': this.$store.getters.getBoardSize,
+          'fen': this.$store.getters.getFen
+        }
       }
 
       this.$router.push(room)
