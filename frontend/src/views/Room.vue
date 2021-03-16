@@ -22,7 +22,6 @@ export default {
   },
   sockets: {
     connect() {
-      //alert('send your friends this link: ')
       console.log('socket connected')
     }
   }

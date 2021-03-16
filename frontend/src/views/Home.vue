@@ -4,36 +4,74 @@
     <input type="text" placeholder="username" class="home-input" id="username" required="required">
     <input type="password" placeholder="password" class="home-input" id="password" required="required">
     <input type="number" placeholder="game_id" min="0" class="home-input" id="game_id" required="required">
-    <button v-on:click="createRoom" type="button" class="home-button">create room</button>
+    <button v-on:click="joinRoom" type="button" class="home-button">create room</button>
   </div>
 </template>
 
 <script>
-import Client from '../mixins/Client.js'
-
 export default {
   name: 'Home',
-  mixins: [Client],
   methods: {
-    async createRoom() {
+    async joinRoom() {
       // Create a room and join it 
       var username = document.getElementById('username').value
       var password = document.getElementById('password').value
-      var game_id = document.getElementById('game_id').value
+      var gameId = document.getElementById('game_id').value
 
-      if (!username) return
-      if (!password) return
-      if (!game_id) return
+      if (!username || !password || !gameId) {
+        this.$swal('Missing values!', 'Check that you have filled all the fields.', 'warning')
+        return
+      }
 
-      var roomMetaData = await this.getGameMetaData(username, password, game_id)
+      await this.login()
 
-      if (!roomMetaData) return
+      if (this.$store.getters.isAuthenticated) {
+        await this.createRoom()
+      }
 
+      if (this.$store.getters.isRoomCreated) {
+        this.redirectToRoom()
+      }
+    },
+    getCredentials() {
+      // Get the credentials from the user
+      var username = document.getElementById('username').value
+      var password = document.getElementById('password').value
+      return {'username': username, 'password': password}
+    },
+    getGameId() {
+      // Get the gameId from the user
+      var gameId = document.getElementById('game_id').value
+      return gameId
+    },
+    async login() {
+      // Login into the backend
+      var credentials = this.getCredentials()
+      await this.$store.dispatch('login', credentials)
+    },
+    async createRoom() {
+      // Create a room to play
+      var gameId = this.getGameId()
+      var authHeader = this.$store.getters.getAuthHeader
+      var payload = {'gameId': gameId, 'authHeader': authHeader}
+      await this.$store.dispatch('createRoom', payload)
+    },
+    redirectToRoom() {
+      // Redirect to the room created
       var room = {
         name: 'Room',
-        path: '/room/' + roomMetaData.roomCode,
-        params: roomMetaData
+        path: '/room/' + this.$store.getters.getRoomCode,
+        params: {
+          'roomCode': this.$store.getters.getRoomCode,
+          'boardSize': this.$store.getters.getBoardSize,
+          'fen': this.$store.getters.getFen
+        }
       }
+
+      var joinRoomComment = 'Send your friends this link!'
+      var joinRoomUrl = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
+
+      this.$swal(joinRoomComment, joinRoomUrl)
 
       this.$router.push(room)
     }

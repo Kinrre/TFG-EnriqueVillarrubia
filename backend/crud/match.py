@@ -21,6 +21,14 @@ def get_match_by_id(db: Session, match_id: int):
     return db_match
 
 
+def get_match_by_room_code(db: Session, room_code: str):
+    """Get a match from the database by his room code."""
+    db_match = db.query(models.Match).filter(
+        models.Match.room_code == room_code
+    ).first()
+    return db_match
+
+
 def update_match(db: Session, match_id: schemas.MatchCreate, player2: schemas.User):
     """Update a match from the database given his id."""
     db_match = get_match_by_id(db, match_id)
