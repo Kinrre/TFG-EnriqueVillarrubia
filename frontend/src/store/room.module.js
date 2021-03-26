@@ -10,13 +10,11 @@ export default {
     roomCode: null,
     isRoomCreated: false,
 
-    isActivePlayer: false,
-
     boardSize: null,
     fen: null,
 
-    player1: null,
-    player2: null
+    color: null,
+    isActivePlayer: false,
   },
   getters: {
     getRoomCode(state) {
@@ -25,14 +23,17 @@ export default {
     isRoomCreated(state) {
       return state.isRoomCreated
     },
-    isActivePlayer(state) {
-      return state.isActivePlayer
-    },
     getBoardSize(state) {
       return state.boardSize
     },
     getFen(state) {
       return state.fen
+    },
+    isActivePlayer(state) {
+      return state.isActivePlayer
+    },
+    getColor(state) {
+      return state.color
     }
   },
   actions: {
@@ -49,6 +50,7 @@ export default {
       }
 
       context.dispatch('commitRoom', response)
+      context.commit('setColor', 'white')
     },
     async joinRoom(context, payload) {
       var url = URL_MATCH + '?room_code=' + payload.roomCode
@@ -63,6 +65,7 @@ export default {
       }
 
       context.dispatch('commitRoom', response)
+      context.commit('setColor', 'black')
     },
     commitRoom(context, response) {
       var roomInfo = {
@@ -80,6 +83,9 @@ export default {
       state.isRoomCreated = true
       state.boardSize = roomInfo.boardSize
       state.fen = roomInfo.fen
+    },
+    setColor(state, color) {
+      state.color = color
     }
   }
 }
