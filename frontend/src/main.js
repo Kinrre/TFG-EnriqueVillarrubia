@@ -4,7 +4,7 @@ import Vue from 'vue'
 
 import './plugins/bootstrap-vue'
 
-//import VueSocketIO from 'vue-socket.io'
+import VueSocketIO from 'vue-socket.io'
 
 import VueSweetalert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
@@ -15,10 +15,11 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-//Vue.use(new VueSocketIO({
-//  debug: true,
-//  connection: 'ws://localhost:8000/'
-//}))
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:8001/',
+  //options: {path: '/ws/socket.io'}
+}))
 
 Vue.use(VueSweetalert2)
 

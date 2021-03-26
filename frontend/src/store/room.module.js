@@ -9,8 +9,12 @@ export default {
   state: {
     roomCode: null,
     isRoomCreated: false,
+
+    isActivePlayer: false,
+
     boardSize: null,
     fen: null,
+
     player1: null,
     player2: null
   },
@@ -20,6 +24,9 @@ export default {
     },
     isRoomCreated(state) {
       return state.isRoomCreated
+    },
+    isActivePlayer(state) {
+      return state.isActivePlayer
     },
     getBoardSize(state) {
       return state.boardSize

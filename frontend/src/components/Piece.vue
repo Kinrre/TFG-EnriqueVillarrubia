@@ -35,6 +35,9 @@ export default {
   },
   methods: {
     onMouseDown(event) {
+      // Ensure is the active player
+      if (!this.$store.getters.isActivePlayer) return
+
       // Ensure we only execute in the clicked component
       if (!event.target.__vue__) return
       if (event.target.__vue__._uid != this._uid) return
@@ -47,6 +50,9 @@ export default {
       this.movePiece(event)
     },
     onMouseMove(event) {
+      // Ensure is the active player
+      if (!this.$store.getters.isActivePlayer) return
+
       // Ensure we are dragging the component
       if (!this.dragging) return
 
@@ -54,6 +60,9 @@ export default {
       this.movePiece(event)
     },
     onMouseUp() {
+      // Ensure is the active player
+      if (!this.$store.getters.isActivePlayer) return
+
       // Ensure we are dragging the component
       if (!this.dragging) return
 
