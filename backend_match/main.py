@@ -10,10 +10,20 @@ socket_app = socketio.ASGIApp(sio)
 @sio.event
 async def connect(sid, environ):
     print('connect ', sid)
-    await sio.emit('hello', 'Can you hear me?')
+
 
 @sio.event
-async def ack(sid, data):
-    print('ack ', sid, data)
+async def join(sid, roomCode):
+    # Join the player into a room with name 'roomCode'
+    # TODO: Check maximum size!
+    print('enter room', sid, roomCode, flush=True)
+    sio.enter_room(sid, roomCode)
+
+
+@sio.event
+async def room_completed(sid, data):
+    # Emit in the room that second player has joined
+    await sio.emit('roomCompleted', data['playerName'], room=data['roomCode'])
+
 
 app.mount('/', socket_app)

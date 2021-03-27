@@ -68,10 +68,10 @@ export default {
         }
       }
 
-      var joinRoomComment = 'Send your friends this link!'
-      var joinRoomUrl = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
+      var title = 'Send your friends this link!'
+      var body = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
 
-      this.$swal(joinRoomComment, joinRoomUrl)
+      this.$swal(title, body)
 
       this.$router.push(room)
     }

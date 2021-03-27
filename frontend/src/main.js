@@ -18,7 +18,7 @@ Vue.config.productionTip = false
 Vue.use(new VueSocketIO({
   debug: true,
   connection: 'http://localhost:8001/',
-  //options: {path: '/ws/socket.io'}
+  options: {autoConnect: false}
 }))
 
 Vue.use(VueSweetalert2)

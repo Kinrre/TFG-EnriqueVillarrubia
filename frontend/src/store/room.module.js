@@ -86,6 +86,9 @@ export default {
     },
     setColor(state, color) {
       state.color = color
-    }
+    },
+    setIsActivePlayer(state, active) {
+      state.isActivePlayer = active
+    },
   }
 }

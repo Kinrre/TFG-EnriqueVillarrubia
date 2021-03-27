@@ -49,13 +49,15 @@ export default {
     },
     redirectToRoom() {
       // Redirect to the room created
+      var credentials = this.getCredentials()
       var room = {
         name: 'Room',
         path: '/room/' + this.$store.getters.getRoomCode,
         params: {
           'roomCode': this.$store.getters.getRoomCode,
           'boardSize': this.$store.getters.getBoardSize,
-          'fen': this.$store.getters.getFen
+          'fen': this.$store.getters.getFen,
+          'playerName': credentials.username
         }
       }
 
