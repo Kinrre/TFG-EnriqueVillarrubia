@@ -26,4 +26,10 @@ async def room_completed(sid, data):
     await sio.emit('roomCompleted', data['playerName'], room=data['roomCode'])
 
 
+@sio.event
+async def move(sid, data):
+    # Emit in the room a movement
+    await sio.emit('move', data, room=data['roomCode'])
+
+
 app.mount('/', socket_app)

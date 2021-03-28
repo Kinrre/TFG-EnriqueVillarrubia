@@ -19,6 +19,8 @@ export default {
   data() {
     return {
       dragging: false,
+      fromPosition: null,
+      toPosition: null,
       style: {
         height: this.props_style.size + '%',
         width: this.props_style.size + '%',
@@ -48,6 +50,9 @@ export default {
       // Change the cursor to grab and tell that we are grabbing the piece
       this.dragging = true
       this.style.cursor = 'grabbing'
+
+      // Save original position
+      this.savePosition('fromPosition')
 
       // Center the piece into the cursor
       this.movePiece(event)
@@ -82,11 +87,24 @@ export default {
       // Center the piece into a square
       this.centerPiece()
 
-      // Delete the piece in the same square (capture the piece)
-      var hasCaptured = this.capturePiece()
+      // Save the new position
+      this.savePosition('toPosition')
 
-      // Play the corresponding sound
-      this.playSound(hasCaptured)
+      // Delete the piece in the same square (capture the piece)
+      this.capturePiece()
+
+      // Emit 'move' event if the new position is different
+      this.emitMove()
+    },
+    savePosition(type) {
+      // Save the coordinates of the piece
+      var coordinates = this.style.transform.match(/[+-]?\d+(\.\d+)?/g)
+
+      if (type == 'fromPosition') {
+        this.fromPosition = coordinates
+      } else if (type == 'toPosition') {
+        this.toPosition = coordinates
+      }
     },
     movePiece(event) {
       // Ensure that we have a parent element
@@ -173,7 +191,8 @@ export default {
         }
       }
 
-      return hasCaptured
+      // Play the corresponding sound
+      this.playSound(hasCaptured)
     },
     playSound(hasCaptured) {
       // Play different sound depending if the piece has captured another piece or not
@@ -188,6 +207,19 @@ export default {
       }
 
       audio.play()
+    },
+    emitMove() {
+      // Emit 'move' event if the new position is different
+      if (this.fromPosition[0] != this.toPosition[0] || this.fromPosition[1] != this.toPosition[1]) {
+        var fromPosition = 'translate(' + this.fromPosition[0] + '%, ' + this.fromPosition[1] + '%)'
+        var toPosition = 'translate(' + this.toPosition[0] + '%, ' + this.toPosition[1] + '%)'
+        var data = {
+          'fromPosition': fromPosition,
+          'toPosition': toPosition,
+          'roomCode': this.$route.params.roomCode
+        }
+        this.$socket.emit('move', data)
+      }
     },
     getPiece() {
       // Get the piece background image

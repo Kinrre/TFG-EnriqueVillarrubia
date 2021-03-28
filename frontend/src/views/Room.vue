@@ -20,6 +20,24 @@ export default {
       return this.$route.params.fen
     },
   },
+  methods: {
+    movePiece(position) {
+      // Move the piece to the new position
+      var board = this.$children[0]
+      var pieces = board.$children
+
+      // Index zero are the coordinates, so we start in the index one
+      for (var i = 1; i < pieces.length; i++) {
+        var piece = pieces[i]
+
+        // Only move the piece in the 'fromPosition' to 'toPosition'
+        if (position.fromPosition == piece.getStyle().transform) {
+          piece.getStyle().transform = position.toPosition
+          piece.capturePiece()
+        }
+      }
+    }
+  },
   sockets: {
     connect() {
       var color = this.$store.getters.getColor
@@ -41,6 +59,19 @@ export default {
         var body = 'Enjoy the game!'
         this.$swal(title, body, 'success')
       }
+    },
+    move(position) {
+      // Change the turn for the active player
+      if (this.$store.getters.isActivePlayer) {
+        this.$store.commit('setIsActivePlayer', false)
+        return
+      }
+
+      // Change the turn for the NOT active player
+      this.$store.commit('setIsActivePlayer', true)
+
+      // Move the piece to the new position
+      this.movePiece(position)
     }
   },
   created() {
