@@ -32,4 +32,10 @@ async def move(sid, data):
     await sio.emit('move', data, room=data['roomCode'])
 
 
+@sio.event
+async def end_game(sid, data):
+    # Emit in the room the end of a game
+    await sio.emit('endGame', data, room=data['roomCode'])
+
+
 app.mount('/', socket_app)
