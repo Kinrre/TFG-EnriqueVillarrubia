@@ -225,6 +225,10 @@ export default {
       // Get the piece background image
       return 'url(' + require('@/assets/pieces/' + this.props_style.color + '/' + this.props_style.color + '_' + this.props_style.piece + '.png') + ')'
     },
+    getColor() {
+      // Return the color of the piece
+      return this.props_style.color
+    },
     getStyle() {
       // Return the style of the piece
       return this.style

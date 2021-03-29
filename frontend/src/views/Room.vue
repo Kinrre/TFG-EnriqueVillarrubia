@@ -36,6 +36,33 @@ export default {
           piece.capturePiece()
         }
       }
+    },
+    checkEndGame() {
+      // Check if the game has finished (no more 'white' or 'black' pieces)
+      var board = this.$children[0]
+      var pieces = board.$children
+
+      var color = this.$store.getters.getColor
+      var isEndGame = true
+
+      // Index zero are the coordinates, so we start in the index one
+      for (var i = 1; i < pieces.length; i++) {
+        var piece = pieces[i]
+        console.log(color, piece.getColor())
+        if (color != piece.getColor()) {
+          isEndGame = false
+        }
+      }
+
+      // Emit a 'end_game' event
+      var data = {
+        'roomCode': this.$route.params.roomCode,
+        'winner': color
+      }
+
+      if (isEndGame) {
+        this.$socket.emit('end_game', data)
+      }
     }
   },
   sockets: {
@@ -55,15 +82,22 @@ export default {
       if (color == 'white') {
         this.$store.commit('setIsActivePlayer', true)
         
-        var title = playerName + ' has joined the game!'
-        var body = 'Enjoy the game!'
+        let title = playerName + ' has joined the game!'
+        let body = 'Now you can move white pieces.'
         this.$swal(title, body, 'success')
+      } else if (color == 'black') {
+        let title = 'You have joined the game!'
+        let body = 'You are the black pieces.'
+        this.$swal(title, body, 'success') 
       }
     },
     move(position) {
       // Change the turn for the active player
       if (this.$store.getters.isActivePlayer) {
         this.$store.commit('setIsActivePlayer', false)
+        
+        // Check if the game has finished
+        this.checkEndGame()
         return
       }
 
@@ -72,6 +106,19 @@ export default {
 
       // Move the piece to the new position
       this.movePiece(position)
+    },
+    endGame(data) {
+      var color = this.$store.getters.getColor
+
+      if (color == data.winner) {
+        let title = 'You win!'
+        let body = 'Well played :D'
+        this.$swal(title, body, 'success')
+      } else {
+        let title = 'You loose!'
+        let body = 'Good luck next time :D'
+        this.$swal(title, body, 'error')
+      }
     }
   },
   created() {
