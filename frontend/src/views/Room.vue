@@ -127,6 +127,9 @@ export default {
   },
   mounted() {
     this.$socket.connect()
+  },
+  beforeDestroy() {
+    this.$socket.disconnect()
   }
 }
 </script>
