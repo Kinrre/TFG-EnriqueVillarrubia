@@ -2,7 +2,6 @@ import logging
 import math
 
 import numpy as np
-import inspect
 
 EPS = 1e-8
 
@@ -38,9 +37,9 @@ class MCTS():
                    proportional to Nsa[(s,a)]**(1./temp)
         """
         for i in range(self.args.numMCTSSims):
-            self.movements_backup = self.game.board.movements # NEW: Save the original number of movements
+            self.movements_backup = self.game.board.current_movement # NEW: Save the original number of movements
             self.search(canonicalBoard)
-            self.game.board.movements = self.movements_backup # NEW: Restore the original number of movements
+            self.game.board.current_movement = self.movements_backup # NEW: Restore the original number of movements
 
         s = self.game.stringRepresentation(canonicalBoard)
         counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]

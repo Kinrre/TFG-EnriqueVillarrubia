@@ -1,0 +1,38 @@
+{
+  "name": "First game",
+  "players": 2,
+  "board": {
+    "height": 6,
+    "width": 6
+  },
+  "initial_board": "1pppp1/1pppp1/6/6/1PPPP1/1PPPP1",
+  "maximum_movements": 50,
+  "pieces": [
+    {
+      "name": "pawn",
+	    "fen_name": "p",
+	    "promotes": false,
+	    "can_jump": false,
+	    "diagonal_capture": false,
+      "movements": [
+        {
+          "direction": "north",
+          "range": 2
+        },
+        {
+          "direction": "south",
+          "range": 2
+        },
+		    {
+          "direction": "west",
+          "range": 2
+        },
+		    {
+          "direction": "east",
+          "range": 2
+        }
+      ]
+    }
+  ],
+  "end_condition": "pawn"
+}

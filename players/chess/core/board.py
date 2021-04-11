@@ -1,23 +1,29 @@
+import json
 import numpy as np
+
 from .piece import Piece
+from .utils import PIECES, MOVEMENTS
 
 DEFAULT_HEIGHT = 6
 DEFAULT_WIDTH = 6
 DEFAULT_BOARD = '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'
 DEFAULT_MAX_MOVEMENTS = 50
+DEFAULT_PIECES = PIECES
+DEFAULT_MOVEMENTS = MOVEMENTS
 
 
 class Board():
     """
-    Chess board.
+    Chess general board.
     """
 
-    def __init__(self, height=None, width=None, fen=None, np_pieces=None, movements=0):
+    def __init__(self, height=None, width=None, fen=None, max_movements=None, pieces_fen=None, movement_rules=None, np_pieces=None, current_movement=0):
         """ Set up initial board configuration. """
         # TODO: Only with the fen string is necessary
         self.height = height or DEFAULT_HEIGHT
         self.width = width or DEFAULT_WIDTH
         self.fen = fen or DEFAULT_BOARD
+        self.pieces_fen = pieces_fen or DEFAULT_PIECES
 
         if np_pieces is None:
             self.__create_board_from_fen()
@@ -28,14 +34,47 @@ class Board():
         self.action_size = self.__action_size()
         self.square_index = self.height * self.width
 
-        self.movements = movements
-        self.max_movements = DEFAULT_MAX_MOVEMENTS
+        self.current_movement = current_movement
+        self.max_movements = max_movements or DEFAULT_MAX_MOVEMENTS
+        self.movement_rules = movement_rules or DEFAULT_MOVEMENTS
+
+    @classmethod
+    def from_json(cls, path):
+        """ Set up inital board configuration given a path to a json file. """
+        with open(path, 'r') as f:
+            content = f.read()
+
+        game_dict = json.loads(content)
+
+        height = game_dict['board']['height'] # Height of the board
+        width = game_dict['board']['width'] # Width of the board
+        fen = game_dict['initial_board'] # Initial board
+        max_movements = game_dict['maximum_movements'] # Maximum movements of the game
+
+        pieces = game_dict['pieces']
+        pieces_fen = {} # Conversion between the fen string and the numbers
+        movement_rules = {} # Movement rules of the game
+
+        # Compute the direction and range of the pieces and the conversion of the fen string
+        index = 0
+        for piece in pieces:
+            index += 1
+            
+            pieces_fen[piece['fen_name'].lower()] = -index
+            pieces_fen[piece['fen_name'].upper()] = index
+
+            movement_rules[index] = {}
+            for movement in piece['movements']:
+                direction = movement['direction']
+                movement_rules[index][direction] = movement['range']
+
+        return cls(height, width, fen, max_movements, pieces_fen, movement_rules)
 
     def copy(self, np_pieces):
         """ Return a board with a copy by value of the pieces. """
         if np_pieces is None:
             np_pieces = np.copy(self.np_pieces)
-        return Board(self.height, self.width, self.fen, np.copy(np_pieces), self.movements)
+        return Board(self.height, self.width, self.fen, self.max_movements, self.pieces_fen, self.movement_rules, np.copy(np_pieces), self.current_movement)
         
     def valid_moves(self):
         """ Returns all the valid movements for the current board. """
@@ -72,7 +111,7 @@ class Board():
 
         player1_npieces = self.np_pieces[self.np_pieces < 0].shape[0]
         player2_npieces = self.np_pieces[self.np_pieces > 0].shape[0]
-        end_by_movements = self.movements >= self.max_movements
+        end_by_movements = self.current_movement >= self.max_movements
 
         if np.all(self.np_pieces >= 0) or (player1_npieces > player2_npieces and end_by_movements):
             # Win has a positive reward
@@ -100,7 +139,7 @@ class Board():
                 row += 1
                 column = 0
             else:
-                self.np_pieces[row][column] = Piece.get_number(piece_type)
+                self.np_pieces[row][column] = Piece.get_number(piece_type, self.pieces_fen)
                 column += 1
 
     def __board_size(self):
@@ -122,7 +161,7 @@ class Board():
         if self.np_pieces[row][column] < 1:
             return
         
-        movements = Piece.get_movement(self.np_pieces[row][column])
+        movements = Piece.get_movement(self.np_pieces[row][column], self.movement_rules)
 
         for key, value in movements.items():
             if key == 'north':

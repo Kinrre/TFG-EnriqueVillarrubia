@@ -10,8 +10,8 @@ class ChessGame(Game):
     ChessGame class implementing the alpha-zero-general Game interface.
     """
 
-    def __init__(self, height=None, width=None, fen=None):
-        self.board = Board(height, width, fen)
+    def __init__(self, path):
+        self.board = Board.from_json(path)
 
     def getInitBoard(self):
         return self.board.np_pieces
@@ -23,7 +23,7 @@ class ChessGame(Game):
         return self.board.action_size
 
     def getNextState(self, board, player, action):
-        self.board.movements += 1
+        self.board.current_movement += 1
         next_board = self.board.copy(np_pieces=board)
         next_board.move(action)
         return next_board.np_pieces, -player
@@ -37,7 +37,7 @@ class ChessGame(Game):
         state = next_board.has_ended()
 
         if state != 0:
-            self.board.movements = 0
+            self.board.current_movement = 0
 
         return state
 
@@ -50,7 +50,7 @@ class ChessGame(Game):
         return [(board, pi), (board[:, ::-1], pi[::-1])]
 
     def stringRepresentation(self, board):
-        return board.tostring() + bytes([self.board.movements])
+        return board.tostring() + bytes([self.board.current_movement])
 
     @staticmethod
     def display(board):

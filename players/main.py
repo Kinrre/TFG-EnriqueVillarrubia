@@ -1,6 +1,6 @@
-import logging
-
+import argparse
 import coloredlogs
+import logging
 
 from Coach import Coach
 from chess.chess_game import ChessGame as Game
@@ -28,9 +28,9 @@ args = dotdict({
 })
 
 
-def main():
+def main(path):
     log.info('Loading %s...', Game.__name__)
-    g = Game()
+    g = Game(path)
 
     log.info('Loading %s...', nn.__name__)
     nnet = nn(g)
@@ -52,4 +52,9 @@ def main():
     c.learn()
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('path', type=str, help='Path to a JSON game configuration. See examples folder.')
+    
+    parser_args = parser.parse_args()
+
+    main(parser_args.path)
