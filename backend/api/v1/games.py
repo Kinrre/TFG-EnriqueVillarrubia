@@ -1,3 +1,4 @@
+from this import d
 from fastapi import APIRouter, Body, Depends, status
 from fastapi.exceptions import HTTPException
 
@@ -22,7 +23,7 @@ def read_games(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def create_game(game: schemas.GameCreate, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
     game.name = game.name.capitalize()
     game.name = game.name.strip()
-    game.name = re.sub(' +', ' ', game.name.strip())
+    game.name = re.sub(' +', ' ', game.name.strip()) # Replace extra white spaces
     db_game = crud.get_game_by_name(db, game.name, current_user)
 
     if db_game:
@@ -33,7 +34,15 @@ def create_game(game: schemas.GameCreate, current_user: schemas.User = Depends(g
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Game name must only contains: letters, digits, spaces or underscore')
 
-    return crud.create_user_game(db, game, current_user.id)
+    db_game = crud.create_user_game(db, game, current_user.id) # Create a game
+    db_pieces = crud.create_pieces(db, game.pieces, db_game.id) # Create the pieces
+
+    for piece, db_piece in zip(game.pieces, db_pieces):
+        crud.create_movements(db, piece.movements, db_piece.id) # Create the movements
+
+    # Train the game (post)
+
+    return db_game
 
 
 @router.get('/api/v1/users/me/games/', response_model=List[schemas.Game], tags=['games'])

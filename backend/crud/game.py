@@ -5,7 +5,13 @@ from backend import models, schemas
 
 def create_user_game(db: Session, game: schemas.GameCreate, user_id: int):
     """Create a game to the database given a GameCreate schema and the owner."""
-    db_game = models.Game(**game.dict(), owner_id=user_id)
+    db_game = models.Game(
+        name=game.name,
+        board_size=game.board_size,
+        initial_board=game.initial_board,
+        maximum_movements=game.maximum_movements,
+        owner_id=user_id
+    )
     
     db.add(db_game)
     db.commit()

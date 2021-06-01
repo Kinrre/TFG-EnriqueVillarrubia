@@ -1,11 +1,15 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
+
+from backend.schemas import Piece, PieceBase
 
 class GameBase(BaseModel):
     """Base game schema."""
     name: str
     board_size: int
-    fen: str
+    initial_board: str
+    maximum_movements: int
+    pieces: List[PieceBase]
 
 
 class GameCreate(GameBase):
@@ -20,11 +24,12 @@ class GameUpdate(BaseModel):
 
 
 class Game(GameBase):
-    """Complete game schema without id."""
+    """Complete game schema."""
     id: int
+    pieces: List[Piece]
     model: str
-    owner_id: int
     trained: bool = False
+    owner_id: int
 
     class Config:
         orm_mode = True
