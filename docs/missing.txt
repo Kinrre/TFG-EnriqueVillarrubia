@@ -1,0 +1,10 @@
+- Board game configuration (AlphaZero)
+- Create a game and train the model (FastAPI and AlphaZero)
+- Validate movements in a match (Vue.js and AlphaZero)
+- Play a game against the model (Vue.js and AlphaZero)
+- Create a board game (Vue.js)
+- Select the other people games (Vue.js)
+- Other UI stuff (Vue.js)
+
+- Check room code duplicated bug
+- Diagonal movements

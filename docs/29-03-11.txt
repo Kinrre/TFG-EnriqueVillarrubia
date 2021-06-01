@@ -1,0 +1,18 @@
+Vuex: Para poder manegar un estado global de la aplicación, acciones y mutaciones.
+Mejor feedback para el usuario, swal, missing values, invalid credentials, invalid room code y OK.
+El jugador2 se puede unir a la misma partida con el enlace.
+El jugador que crea la partida sólo puede mover sus propias piezas y cuando es su turno.
+Nuevo servidor, socketio que hace de intermediario, hay 4 eventos, join, roomCompleted, move y endGame.
+Primera versión de una partida, pasa el turno, se mueve las piezas y su correspondiente sonido.
+Final de partida añadido también.
+
+Mapa mental creado, faltan cosas, está lo que está hecho.
+Documento con cosas por hacer.
+Configuración del juego en un JSON, ya no está hardcodeado.
+El archivo JSON tiene cosas que no están implementadas, pero que se podría tener en cuenta.
+Básicamente se utiliza, name, board, inital_board, maximum_movements, fen_name y movements.
+Ahora le pasas un path y ya te lo hace en función del JSON.
+
+Overleaf.
+
+transmorfar todo a trazo y a svg o pdf
