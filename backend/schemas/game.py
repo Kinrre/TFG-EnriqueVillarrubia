@@ -20,7 +20,8 @@ class GameCreate(GameBase):
 class GameUpdate(BaseModel):
     """Update game schema."""
     new_name: Optional[str] = None
-    trained: Optional[bool] = None
+    is_training: Optional[bool] = None
+    is_trained: Optional[bool] = None
 
 
 class Game(GameBase):
@@ -28,7 +29,8 @@ class Game(GameBase):
     id: int
     pieces: List[Piece]
     model: str
-    trained: bool = False
+    is_training: bool = False
+    is_trained: bool = False
     owner_id: int
 
     class Config:

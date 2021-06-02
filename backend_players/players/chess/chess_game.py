@@ -1,9 +1,5 @@
-import sys
-import numpy as np
-sys.path.append('..')
-from Game import Game
-from .core import Board
-
+from backend_players.players.Game import Game
+from backend_players.players.chess.core import Board
 
 class ChessGame(Game):
     """

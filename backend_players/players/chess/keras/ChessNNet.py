@@ -1,13 +1,10 @@
-import sys
-sys.path.append('..')
-from utils import *
-
-import argparse
 import tensorflow as tf
 
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Dense, Dropout, Reshape, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
+
+from backend_players.players.utils import *
 
 class ChessNNet():
     def __init__(self, game, args):

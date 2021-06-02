@@ -1,19 +1,14 @@
-import argparse
-import os
-import shutil
-import time
-import random
 import numpy as np
-import math
-import sys
+import time
+import os
+
 from tensorflow.keras.callbacks import TensorBoard
-sys.path.append('../..')
-from utils import *
-from NeuralNet import NeuralNet
 
-import argparse
+from backend_players.players.utils import *
+from backend_players.players.NeuralNet import NeuralNet
+from backend_players.players.chess.keras.ChessNNet import ChessNNet as onnet
 
-from .ChessNNet import ChessNNet as onnet
+DEFAULT_LOG_DIR = 'D:/modelos/chess/modelo2'
 
 args = dotdict({
     'lr': 0.001,
@@ -22,14 +17,16 @@ args = dotdict({
     'batch_size': 64,
     'cuda': True,
     'num_channels': 512,
-    'log_dir': 'D:/modelos/chess/modelo2',
+    'log_dir': DEFAULT_LOG_DIR,
 })
 
 class NNetWrapper(NeuralNet):
-    def __init__(self, game):
+
+    def __init__(self, game, log_dir):
         self.nnet = onnet(game, args)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
+        args.log_dir = log_dir
 
     def train(self, examples):
         """

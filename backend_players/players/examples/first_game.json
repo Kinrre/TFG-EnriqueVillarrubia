@@ -6,7 +6,7 @@
   "pieces": [
     {
       "name": "pawn",
-	    "fen_name": "p",
+      "fen_name": "p",
       "movements": [
         {
           "direction": "north",
@@ -16,11 +16,11 @@
           "direction": "south",
           "range": 2
         },
-		    {
+        {
           "direction": "west",
           "range": 2
         },
-		    {
+        {
           "direction": "east",
           "range": 2
         }

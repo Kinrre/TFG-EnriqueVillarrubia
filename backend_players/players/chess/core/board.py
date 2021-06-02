@@ -1,8 +1,8 @@
 import json
 import numpy as np
 
-from .piece import Piece
-from .utils import PIECES, MOVEMENTS
+from backend_players.players.chess.core.piece import Piece
+from backend_players.players.chess.core.utils import PIECES, MOVEMENTS
 
 DEFAULT_HEIGHT = 6
 DEFAULT_WIDTH = 6
@@ -19,7 +19,6 @@ class Board():
 
     def __init__(self, height=None, width=None, fen=None, max_movements=None, pieces_fen=None, movement_rules=None, np_pieces=None, current_movement=0):
         """ Set up initial board configuration. """
-        # TODO: Only with the fen string is necessary
         self.height = height or DEFAULT_HEIGHT
         self.width = width or DEFAULT_WIDTH
         self.fen = fen or DEFAULT_BOARD
@@ -40,8 +39,11 @@ class Board():
 
     @classmethod
     def from_json(cls, game_configuration):
-        """ Set up inital board configuration given a path to a json file. """
-        game_dict = json.loads(game_configuration)
+        """ Set up inital board configuration given a json file. """
+        if isinstance(game_configuration, dict):
+            game_dict = game_configuration
+        else:
+            game_dict = json.loads(game_configuration)
 
         height = game_dict['board_size'] # Height of the board
         width = game_dict['board_size'] # Width of the board

@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class HumanChessPlayer():
     """
     A human chess player.

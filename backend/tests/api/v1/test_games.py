@@ -30,7 +30,7 @@ def test_create_valid_game():
     assert response.status_code == 200
     assert response.json()['name'] == 'Chess'
     assert response.json()['owner_id'] == 1
-    assert response.json()['trained'] == False
+    assert response.json()['is_trained'] == False
     assert response.json()['board_size'] == 6
     assert response.json()['initial_board'] == '1pppp1/1pppp1/6/6/1PPPP1/1PPPP1'
 
@@ -103,7 +103,7 @@ def test_update_game_1():
     response = client.put(
         '/api/v1/users/me/games/chess',
         headers={'Authorization': f'Bearer {token}'},
-        json={'new_name': 'Chess2', 'trained': True}
+        json={'new_name': 'Chess2', 'is_trained': True}
     )
     assert response.status_code == 200
     response = client.get(
@@ -112,7 +112,7 @@ def test_update_game_1():
     )
     assert response.status_code == 200
     assert response.json()['name'] == 'Chess2'
-    assert response.json()['trained'] == True
+    assert response.json()['is_trained'] == True
 
 
 def test_update_game_2():
@@ -130,7 +130,7 @@ def test_update_game_2():
     )
     assert response.status_code == 200
     assert response.json()['name'] == 'Chess3'
-    assert response.json()['trained'] == True
+    assert response.json()['is_trained'] == True
 
 
 def test_update_game_3():
@@ -139,7 +139,7 @@ def test_update_game_3():
     response = client.put(
         '/api/v1/users/me/games/chess3',
         headers={'Authorization': f'Bearer {token}'},
-        json={'trained': False}
+        json={'is_trained': False}
     )
     assert response.status_code == 200
     response = client.get(
@@ -148,7 +148,7 @@ def test_update_game_3():
     )
     assert response.status_code == 200
     assert response.json()['name'] == 'Chess3'
-    assert response.json()['trained'] == False
+    assert response.json()['is_trained'] == False
 
 
 def test_delete_game():
