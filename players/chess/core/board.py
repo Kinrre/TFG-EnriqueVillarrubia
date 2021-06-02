@@ -39,15 +39,12 @@ class Board():
         self.movement_rules = movement_rules or DEFAULT_MOVEMENTS
 
     @classmethod
-    def from_json(cls, path):
+    def from_json(cls, game_configuration):
         """ Set up inital board configuration given a path to a json file. """
-        with open(path, 'r') as f:
-            content = f.read()
+        game_dict = json.loads(game_configuration)
 
-        game_dict = json.loads(content)
-
-        height = game_dict['board']['height'] # Height of the board
-        width = game_dict['board']['width'] # Width of the board
+        height = game_dict['board_size'] # Height of the board
+        width = game_dict['board_size'] # Width of the board
         fen = game_dict['initial_board'] # Initial board
         max_movements = game_dict['maximum_movements'] # Maximum movements of the game
 

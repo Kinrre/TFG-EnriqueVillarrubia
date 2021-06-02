@@ -13,24 +13,24 @@ coloredlogs.install(level='INFO')  # Change this to DEBUG to see more info.
 
 args = dotdict({
     'numIters': 100,
-    'numEps': 1,              # Number of complete self-play games to simulate during a new iteration.
+    'numEps': 15,              # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 10,        #
     'updateThreshold': 0.6,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
-    'numMCTSSims': 10,          # Number of games moves for MCTS to simulate.
-    'arenaCompare': 4,         # Number of games to play during arena play to determine if new net will be accepted.
+    'numMCTSSims': 30,          # Number of games moves for MCTS to simulate.
+    'arenaCompare': 20,         # Number of games to play during arena play to determine if new net will be accepted.
     'cpuct': 1,
 
-    'checkpoint': 'temp/',
+    'checkpoint': 'D:/modelos/chess/modelo2',
     'load_model': False,
     'load_folder_file': ('temp/', 'best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 })
 
 
-def main(path):
+def main(game_configuration):
     log.info('Loading %s...', Game.__name__)
-    g = Game(path)
+    g = Game(game_configuration)
 
     log.info('Loading %s...', nn.__name__)
     nnet = nn(g)
@@ -57,4 +57,7 @@ if __name__ == "__main__":
     
     parser_args = parser.parse_args()
 
-    main(parser_args.path)
+    with open(parser_args.path, 'r') as f:
+        content = f.read()
+
+    main(content)

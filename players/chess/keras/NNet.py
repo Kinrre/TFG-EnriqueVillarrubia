@@ -16,13 +16,13 @@ import argparse
 from .ChessNNet import ChessNNet as onnet
 
 args = dotdict({
-    'lr': 0.005,
+    'lr': 0.001,
     'dropout': 0.3,
     'epochs': 10,
     'batch_size': 64,
     'cuda': True,
     'num_channels': 512,
-    'log_dir': 'D:/modelos/chess/20-15-15-10',
+    'log_dir': 'D:/modelos/chess/modelo2',
 })
 
 class NNetWrapper(NeuralNet):
