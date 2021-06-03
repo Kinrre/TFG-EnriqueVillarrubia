@@ -1,17 +1,29 @@
+from GPUtil.GPUtil import GPU
 from fastapi import APIRouter, status
 from fastapi.exceptions import HTTPException
 
 from multiprocessing import Process
 
 from backend_players.players.main import train
-from backend_players.core.config import GAME_URL
+from backend_players.core.config import GAME_URL, MEMORY_GPU, TIME_WAIT_GPU
 
+import GPUtil
 import requests
+import time
 
 router = APIRouter()
 
 @router.post('/api/v1/train/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['train'])
 async def train_game(id: int):
+    time.sleep(TIME_WAIT_GPU) # Wait to create the other training processes
+
+    gpu = GPUtil.getGPUs()[0]
+
+    # Ensuring we have enough memory for a training process and a playing process
+    if gpu.memoryFree < MEMORY_GPU * 2:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail='Not enough memory in the system, please try later')
+
     game_response = requests.get(GAME_URL + str(id)) # Get the game configuration
 
     if game_response.status_code != status.HTTP_200_OK:

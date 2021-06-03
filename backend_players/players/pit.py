@@ -17,14 +17,14 @@ g = ChessGame(content)
 hp = HumanChessPlayer(g).play
 
 n1 = NNetWrapper(g)
-n1.load_checkpoint('backend_players/players/models/48143fae-76a7-4332-acfb-9afcb42fc14a', 'checkpoint_0.pth.tar')
+n1.load_checkpoint('backend_players/players/models/ea8b0022-99a1-4a07-b6f6-2c73ce02d3fd', 'checkpoint_2.pth.tar')
 
 args1 = dotdict({'numMCTSSims': 30, 'cpuct': 1})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
 n2 = NNetWrapper(g)
-n2.load_checkpoint('backend_players/players/models/48143fae-76a7-4332-acfb-9afcb42fc14a', 'best.pth.tar')
+n2.load_checkpoint('backend_players/players/models/ea8b0022-99a1-4a07-b6f6-2c73ce02d3fd', 'best.pth.tar')
 
 args2 = dotdict({'numMCTSSims': 30, 'cpuct': 1})
 mcts2 = MCTS(g, n2, args2)
