@@ -17,7 +17,7 @@ export default {
   },
   props: {
     boardSize: Number,
-    fen: String
+    initialBoard: String
   },
   data() {
     return {
@@ -58,9 +58,9 @@ export default {
       var pieces = []
       var row = 0, column = 0, id = 0
 
-      for (let piece_type = 0; piece_type < this.fen.length; piece_type++) {
+      for (let piece_type = 0; piece_type < this.initialBoard.length; piece_type++) {
         var piece = {}, char_piece
-        char_piece = this.fen.charAt(piece_type)
+        char_piece = this.initialBoard.charAt(piece_type)
         
         if (parseInt(char_piece)) {
           column += parseInt(char_piece)

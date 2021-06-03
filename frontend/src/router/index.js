@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import CreateRoom from '../views/CreateRoom.vue'
 import Home from '../views/Home.vue'
-import Room from '../views/Room.vue'
 import JoinRoom from '../views/JoinRoom.vue'
+import Room from '../views/Room.vue'
 
 Vue.use(VueRouter)
 
@@ -11,6 +12,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/create-room/',
+    name: 'CreateRoom',
+    component: CreateRoom
   },
   {
     path: '/room/:roomCode',

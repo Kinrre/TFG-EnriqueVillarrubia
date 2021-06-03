@@ -1,9 +1,10 @@
 <template>
   <div class="home">
-    <h1>Join a room</h1>
+    <h1>Create a room</h1>
     <input type="text" placeholder="username" class="home-input" id="username" required="required">
     <input type="password" placeholder="password" class="home-input" id="password" required="required">
-    <button v-on:click="joinRoom" type="button" class="home-button">join room</button>
+    <input type="number" placeholder="game_id" min="0" class="home-input" id="game_id" required="required">
+    <button v-on:click="joinRoom" type="button" class="home-button">create room</button>
   </div>
 </template>
 
@@ -12,11 +13,12 @@ export default {
   name: 'Home',
   methods: {
     async joinRoom() {
-      // Join a room
+      // Create a room and join it 
       var username = document.getElementById('username').value
       var password = document.getElementById('password').value
+      var gameId = document.getElementById('game_id').value
 
-      if (!username || !password) {
+      if (!username || !password || !gameId) {
         this.$swal('Missing values!', 'Check that you have filled all the fields.', 'warning')
         return
       }
@@ -24,7 +26,7 @@ export default {
       await this.login()
 
       if (this.$store.getters.isAuthenticated) {
-        await this.registerRoom()
+        await this.createRoom()
       }
 
       if (this.$store.getters.isRoomCreated) {
@@ -37,29 +39,41 @@ export default {
       var password = document.getElementById('password').value
       return {'username': username, 'password': password}
     },
+    getGameId() {
+      // Get the gameId from the user
+      var gameId = document.getElementById('game_id').value
+      return gameId
+    },
     async login() {
       // Login into the backend
       var credentials = this.getCredentials()
       await this.$store.dispatch('login', credentials)
     },
-    async registerRoom() {
-      var roomCode = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
-      var payload = {'roomCode': roomCode}
-      await this.$store.dispatch('joinRoom', payload)
+    async createRoom() {
+      // Create a room to play
+      var gameId = this.getGameId()
+      var authHeader = this.$store.getters.getAuthHeader
+      var payload = {'gameId': gameId, 'authHeader': authHeader}
+      await this.$store.dispatch('createRoom', payload)
     },
     redirectToRoom() {
       // Redirect to the room created
-      var credentials = this.getCredentials()
       var room = {
         name: 'Room',
         path: '/room/' + this.$store.getters.getRoomCode,
         params: {
           'roomCode': this.$store.getters.getRoomCode,
           'boardSize': this.$store.getters.getBoardSize,
-          'initialBoard': this.$store.getters.getInitialBoard,
-          'playerName': credentials.username
+          'initialBoard': this.$store.getters.getInitialBoard
         }
       }
+
+      console.log(room)
+
+      var title = 'Send your friends this link!'
+      var body = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
+
+      this.$swal(title, body)
 
       this.$router.push(room)
     }

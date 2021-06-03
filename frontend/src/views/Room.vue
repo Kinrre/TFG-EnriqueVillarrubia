@@ -1,6 +1,6 @@
 <template>
   <div class="room">
-    <Board :boardSize="boardSize" :fen="fen"/>
+    <Board :boardSize="boardSize" :initialBoard="initialBoard"/>
   </div>
 </template>
 
@@ -16,8 +16,8 @@ export default {
     boardSize() {
       return this.$route.params.boardSize
     },
-    fen() {
-      return this.$route.params.fen
+    initialBoard() {
+      return this.$route.params.initialBoard
     },
   },
   methods: {
@@ -123,7 +123,7 @@ export default {
   },
   created() {
     // Ensure the room has been properly created
-    if (this.boardSize == null || this.fen == null) this.$router.push('/')
+    if (this.boardSize == null || this.initialBoard == null) this.$router.push('/')
   },
   mounted() {
     this.$socket.connect()

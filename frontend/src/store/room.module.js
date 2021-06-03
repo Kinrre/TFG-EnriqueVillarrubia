@@ -11,7 +11,7 @@ export default {
     isRoomCreated: false,
 
     boardSize: null,
-    fen: null,
+    initialBoard: null,
 
     color: null,
     isActivePlayer: false,
@@ -26,8 +26,8 @@ export default {
     getBoardSize(state) {
       return state.boardSize
     },
-    getFen(state) {
-      return state.fen
+    getInitialBoard(state) {
+      return state.initialBoard
     },
     isActivePlayer(state) {
       return state.isActivePlayer
@@ -71,7 +71,7 @@ export default {
       var roomInfo = {
         'roomCode': response.data.room_code,
         'boardSize': response.data.game.board_size,
-        'fen': response.data.game.fen
+        'initialBoard': response.data.game.initial_board
       }
 
       context.commit('setRoom', roomInfo)
@@ -82,7 +82,7 @@ export default {
       state.roomCode = roomInfo.roomCode
       state.isRoomCreated = true
       state.boardSize = roomInfo.boardSize
-      state.fen = roomInfo.fen
+      state.initialBoard = roomInfo.initialBoard
     },
     setColor(state, color) {
       state.color = color
