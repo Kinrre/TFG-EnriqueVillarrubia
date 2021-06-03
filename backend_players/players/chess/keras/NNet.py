@@ -22,7 +22,7 @@ args = dotdict({
 
 class NNetWrapper(NeuralNet):
 
-    def __init__(self, game, log_dir):
+    def __init__(self, game, log_dir=DEFAULT_LOG_DIR):
         self.nnet = onnet(game, args)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()

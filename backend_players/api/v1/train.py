@@ -1,6 +1,7 @@
-from backend.schemas import game
-from fastapi import APIRouter, BackgroundTasks, status
+from fastapi import APIRouter, status
 from fastapi.exceptions import HTTPException
+
+from multiprocessing import Process
 
 from backend_players.players.main import train
 from backend_players.core.config import GAME_URL
@@ -10,7 +11,7 @@ import requests
 router = APIRouter()
 
 @router.post('/api/v1/train/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['train'])
-async def train_game(id: int, background_tasks: BackgroundTasks):
+async def train_game(id: int):
     game_response = requests.get(GAME_URL + str(id)) # Get the game configuration
 
     if game_response.status_code != status.HTTP_200_OK:
@@ -29,6 +30,7 @@ async def train_game(id: int, background_tasks: BackgroundTasks):
 
     model = 'backend_players/players/models/' + game_json['model'] # Obtain the model of the game
 
-    background_tasks.add_task(train, game_json, model)
+    proc =  Process(target=train, args=(game_json, model)) # Create the process of training
+    proc.start() # Start the process
 
-    return {'detail': 'Player training request sent'}
+    return {'detail': 'Player training request sent, check the id for the status', 'id': game_json['id']}
