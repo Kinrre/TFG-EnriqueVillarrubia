@@ -16,7 +16,7 @@ class Game(Base):
     board_size = Column(Integer)
     initial_board = Column(String)
     maximum_movements = Column(Integer)
-    model = Column(String, unique=True, index=True, default=str(uuid.uuid4()))
+    model = Column(String, unique=True, index=True, default=uuid.uuid4)
     is_training = Column(Boolean, default=False)
     is_trained = Column(Boolean, default=False)
     owner_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))

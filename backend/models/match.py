@@ -7,6 +7,10 @@ from backend.database import Base
 
 import secrets
 
+def generate_room_code():
+    return secrets.token_urlsafe(4)
+
+
 class Match(Base):
     """Match database model."""
     __tablename__ = 'matches'
@@ -16,7 +20,7 @@ class Match(Base):
     game_id = Column(Integer, ForeignKey('games.id', ondelete=None))
     player1_id = Column(Integer, ForeignKey('users.id', ondelete=None))
     player2_id = Column(Integer, ForeignKey('users.id', ondelete=None))
-    room_code = Column(String, default=secrets.token_urlsafe(4))
+    room_code = Column(String, default=generate_room_code)
     winner = Column(Integer, ForeignKey('users.id', ondelete=None), default=None)
 
     game = relationship('Game')
