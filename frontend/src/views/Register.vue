@@ -1,0 +1,88 @@
+<template>
+  <div class="register">
+    <h1 class="header">Register</h1>
+    <form @submit="register" class="form-register" method="post">
+      <div class="item-form">
+        <div>
+          <label for="username">What is your username?</label>
+        </div>
+        <input type="text" placeholder="Username" id="username" required="required">
+      </div>
+      <div class="item-form-double">
+        <div>
+          <label for="password">Create your password</label>
+        </div>
+        <input type="password" placeholder="Password" id="password" required="required">
+      </div>
+      <div class="item-form">
+         <input type="submit" value="Create account" id="register" class="register-submit">
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Register',
+  methods: {
+    async register(e) {
+      e.preventDefault() // Prevent default behaviour of submit
+
+      var credentials = this.getCredentials()
+
+      if (!credentials) {
+        this.$swal('Missing values!', 'Check that you have filled all the fields.', 'warning')
+        return
+      }
+
+      await this.$store.dispatch('register', credentials)
+
+      if (this.$store.getters.isAuthenticated) {
+        // Go to the home page
+        this.$router.push('/')
+      }
+    },
+    getCredentials() {
+      // Get the credentials from the user
+      var username = document.getElementById('username').value
+      var password = document.getElementById('password').value
+      return {'username': username, 'password': password}
+    }
+  },
+  created() {
+    // Change title of page
+    document.title = 'Register'
+  }
+}
+</script>
+
+<style scoped>
+.register {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.header {
+  margin-top: 35vh;
+  margin-bottom: 2vh;
+  font-size: 3.5vmin;
+}
+
+.form-register {
+  font-size: 1.75vmin;
+}
+
+.item-form {
+  margin-bottom: 1vh;
+}
+
+.item-form-double {
+  margin-bottom: 2vh;
+}
+
+.register-submit {
+  width: 100%;
+}
+</style>

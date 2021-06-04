@@ -1,11 +1,11 @@
 <template>
   <div class="home">
     <div v-if="!isAuthenticated" class="login-register">
-      <a class="register" href="/register/">Register</a>
-      <a href="/login/">Login</a>
+      <router-link to="/register/" class="register">Register</router-link>
+      <router-link to="/login/">Login</router-link>
     </div>
     <div v-else class="login-register">
-      <a href="/profile/">Username - {{ username }}</a>
+      <router-link to="/profile/">Username - {{ username }}</router-link>
     </div>
     <h1 class="header">List of Games</h1>
     <div class="games">
@@ -15,7 +15,7 @@
           <th>Author</th>
           <th>Board size</th>
           <th>Max movements</th>
-          <th>Training</th>
+          <th>Trained</th>
           <th>Play</th>
         </tr>
         <Game v-for="game in games" v-bind:props_style="game" :key="game.id"/>
@@ -48,9 +48,11 @@ export default {
       await this.$store.dispatch('getGames')
       this.games = this.$store.getters.getGames
       this.isGamesLoaded = true
-      this.isAuthenticated = true
-      this.username = 'Enrique'
     }
+  },
+  created() {
+    // Change title of page
+    document.title = 'Home'
   }
 }
 </script>

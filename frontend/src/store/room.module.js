@@ -3,6 +3,7 @@ import Vue from 'vue'
 
 const URL_GAME = 'http://localhost:8000/api/v1/matches/?game_id='
 const URL_MATCH = 'http://localhost:8000/api/v1/matches/'
+
 const HTTP_NOT_FOUND = 404
 
 export default {

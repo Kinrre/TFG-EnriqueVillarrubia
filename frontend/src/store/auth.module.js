@@ -2,6 +2,9 @@ import axios from 'axios'
 import Vue from 'vue'
 
 const URL_AUTH = 'http://localhost:8000/api/v1/auth/token'
+const URL_USERS = 'http://localhost:8000/api/v1/users/'
+
+const HTTP_BAD_REQUEST = 400
 const HTTP_UNAUTHORIZED = 401
 
 export default {
@@ -37,10 +40,25 @@ export default {
         return
       }
 
-      var token = response.data.access_token
-
-      context.commit('setToken', token)
+      context.dispatch('commitToken', response)
       context.commit('setUsername', credentials.username)
+    },
+    async register(context, credentials) {
+      try {
+        var response = await axios.post(URL_USERS, credentials)
+      } catch (error) {
+        if (error.response.status == HTTP_BAD_REQUEST) {
+          Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
+        }
+        return
+      }
+
+      context.dispatch('commitToken', response)
+      context.commit('setUsername', credentials.username)
+    },
+    commitToken(context, response) {
+      var token = response.data.access_token
+      context.commit('setToken', token)
     }
   },
   mutations: {
