@@ -1,16 +1,16 @@
 <template>
-  <div class="home">
+  <div class="create-room">
     <h1>Create a room</h1>
-    <input type="text" placeholder="username" class="home-input" id="username" required="required">
-    <input type="password" placeholder="password" class="home-input" id="password" required="required">
-    <input type="number" placeholder="game_id" min="0" class="home-input" id="game_id" required="required">
-    <button v-on:click="joinRoom" type="button" class="home-button">create room</button>
+    <input type="text" placeholder="username" class="create-room-input" id="username" required="required">
+    <input type="password" placeholder="password" class="create-room-input" id="password" required="required">
+    <input type="number" placeholder="game_id" min="0" class="create-room-input" id="game_id" required="required">
+    <button v-on:click="joinRoom" type="button" class="create-room-button">create room</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home',
+  name: 'CreateRoom',
   methods: {
     async joinRoom() {
       // Create a room and join it 
@@ -68,8 +68,6 @@ export default {
         }
       }
 
-      console.log(room)
-
       var title = 'Send your friends this link!'
       var body = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
 
@@ -82,7 +80,7 @@ export default {
 </script>
 
 <style>
-.home {
+.create-room {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -90,14 +88,14 @@ export default {
   flex-direction: column;
 }
 
-.home-button {
+.create-room-button {
   font-size: 2vmax;
   padding: 4px 8px;
   font-weight: 700;
   margin-top: 0.5vh;
 }
 
-.home-input {
+.create-room-input {
   margin-bottom: 0.5vh;
   font-size: 1vmax;
 }

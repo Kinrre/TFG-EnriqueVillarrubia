@@ -1,15 +1,15 @@
 <template>
-  <div class="home">
+  <div class="join-room">
     <h1>Join a room</h1>
-    <input type="text" placeholder="username" class="home-input" id="username" required="required">
-    <input type="password" placeholder="password" class="home-input" id="password" required="required">
-    <button v-on:click="joinRoom" type="button" class="home-button">join room</button>
+    <input type="text" placeholder="username" class="join-room-input" id="username" required="required">
+    <input type="password" placeholder="password" class="join-room-input" id="password" required="required">
+    <button v-on:click="joinRoom" type="button" class="join-room-button">join room</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home',
+  name: 'JoinRoom',
   methods: {
     async joinRoom() {
       // Join a room
@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style>
-.home {
+.join-room {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -76,14 +76,14 @@ export default {
   flex-direction: column;
 }
 
-.home-button {
+.join-room-button {
   font-size: 2vmax;
   padding: 4px 8px;
   font-weight: 700;
   margin-top: 0.5vh;
 }
 
-.home-input {
+.join-room-input {
   margin-bottom: 0.5vh;
   font-size: 1vmax;
 }

@@ -42,9 +42,20 @@ def delete_user(current_user: schemas.User = Depends(get_current_user), db: Sess
 
 
 @router.get('/api/v1/users/{username}', response_model=schemas.User, tags=['users'])
-def read_user(username: str, db: Session = Depends(get_db)):
+def read_user_username(username: str, db: Session = Depends(get_db)):
     username = username.capitalize()
     db_user = crud.get_user_by_username(db, username)
+
+    if db_user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail='User not found')
+
+    return db_user
+
+
+@router.get('/api/v1/users/id/{id}', response_model=schemas.User, tags=['users'])
+def read_user_id(id: int, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db, id)
 
     if db_user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'Coordinates',
+  name: 'TextCoordinate',
   props: {
     props_style: {
       boardSize: Number,
