@@ -1,8 +1,15 @@
 <template>
-  <div id="home">
-    <h1 id="header">List of Games</h1>
-    <div id="games">
-      <table id="table-games">
+  <div class="home">
+    <div v-if="!isAuthenticated" class="login-register">
+      <a class="register" href="/register/">Register</a>
+      <a href="/login/">Login</a>
+    </div>
+    <div v-else class="login-register">
+      <a href="/profile/">Username - {{ username }}</a>
+    </div>
+    <h1 class="header">List of Games</h1>
+    <div class="games">
+      <table class="table-games">
         <tr>
           <th>Name</th>
           <th>Author</th>
@@ -31,7 +38,9 @@ export default {
   data() {
     return {
       games: this.getGames(),
-      isGamesLoaded: false
+      isGamesLoaded: false,
+      username: this.$store.getters.getUsername,
+      isAuthenticated: this.$store.getters.isAuthenticated
     }
   },
   methods: {
@@ -39,32 +48,45 @@ export default {
       await this.$store.dispatch('getGames')
       this.games = this.$store.getters.getGames
       this.isGamesLoaded = true
+      this.isAuthenticated = true
+      this.username = 'Enrique'
     }
   }
 }
 </script>
 
 <style>
-#home {
+.home {
   height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-#header {
-  margin-top: 2%;
+.login-register {
+  width: 80%;
+  font-size: 1.75vmin;
+  margin-top: 0.5%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.register {
+  margin-right: 2%;
+}
+
+.header {
   margin-bottom: 2%;
   font-size: 3.5vmin;
 }
 
-#games {
+.games {
   width: 80%;
   overflow-x: auto;
   margin-bottom: 2%;
 }
 
-#table-games {
+.table-games {
   width: 100%;
   font-size: 1.75vmin;
   text-align: center;
@@ -72,21 +94,21 @@ export default {
   border-spacing: 0 0.5em;
 }
 
-#table-games tr:nth-child(even) {
+.table-games tr:nth-child(even) {
   background-color: #779556;
   color: black;
 }
 
-#table-games tr:nth-child(2n+3) {
+.table-games tr:nth-child(2n+3) {
   background-color: #ebecd0;
   color: black;
 }
 
-#table-games tr:nth-child(even):hover {
+.table-games tr:nth-child(even):hover {
   color: #ebecd0;
 }
 
-#table-games tr:nth-child(2n+3):hover {
+.table-games tr:nth-child(2n+3):hover {
   color: #779556;
 }
 </style>

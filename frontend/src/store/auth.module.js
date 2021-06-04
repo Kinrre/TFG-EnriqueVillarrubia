@@ -6,10 +6,14 @@ const HTTP_UNAUTHORIZED = 401
 
 export default {
   state: {
+    username: null,
     token: null,
     isAuthenticated: false
   },
   getters: {
+    getUsername(state) {
+      return state.username
+    },
     getToken(state) {
       return state.token
     },
@@ -36,12 +40,16 @@ export default {
       var token = response.data.access_token
 
       context.commit('setToken', token)
+      context.commit('setUsername', credentials.username)
     }
   },
   mutations: {
     setToken(state, token) {
       state.token = token
       state.isAuthenticated = true
+    },
+    setUsername(state, username) {
+      state.username = username
     }
   }
 }
