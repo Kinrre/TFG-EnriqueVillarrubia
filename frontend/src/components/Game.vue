@@ -27,7 +27,7 @@ export default {
       author: this.props_style.username,
       boardSize: this.props_style.board_size + 'x' + this.props_style.board_size,
       maxMovements: this.props_style.maximum_movements,
-      training: this.props_style.is_training
+      training: this.props_style.is_training ? "✔️" : "❌"
     }
   }
 }
