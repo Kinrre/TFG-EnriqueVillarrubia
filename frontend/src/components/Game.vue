@@ -5,7 +5,7 @@
       <td>{{ boardSize }}</td>
       <td>{{ maxMovements }}</td>
       <td>{{ is_trained }}</td>
-      <td><button type="button">Play</button></td>
+      <td><button type="button" class="transparent">▶️</button></td>
     </tr>
 </template>
 
@@ -34,4 +34,11 @@ export default {
 </script>
 
 <style>
+.transparent {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  overflow: hidden;
+  outline: none;
+}
 </style>

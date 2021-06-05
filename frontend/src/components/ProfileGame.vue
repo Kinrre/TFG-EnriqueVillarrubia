@@ -6,8 +6,8 @@
       <td>{{ maxMovements }}</td>
       <td>{{ is_training }}</td>
       <td>{{ is_trained }}</td>
-      <td><button type="button" :disabled=training_available>Train</button></td>
-      <td><button type="button">Play</button></td>
+      <td><button type="button" class="transparent" :disabled=training_available>{{ training_emoji }}</button></td>
+      <td><button type="button" class="transparent">▶️</button></td>
     </tr>
 </template>
 
@@ -32,11 +32,30 @@ export default {
       maxMovements: this.props_style.maximum_movements,
       is_training: this.props_style.is_training ? "✔️" : "❌",
       is_trained: this.props_style.is_trained ? "✔️" : "❌",
-      training_available: this.props_style.is_trained
+      training_available: !this.props_style.is_trained,
+      training_emoji: this.getTrainingEmoji()
+    }
+  },
+  methods: {
+    getTrainingEmoji() {
+      var emoji = "-"
+
+      if (!this.props_style.is_training && !this.props_style.is_trained) {
+        emoji = "🏋️"
+      }
+      
+      return emoji
     }
   }
 }
 </script>
 
 <style>
+.transparent {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  overflow: hidden;
+  outline: none;
+}
 </style>
