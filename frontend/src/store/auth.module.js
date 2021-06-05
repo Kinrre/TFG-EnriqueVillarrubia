@@ -30,7 +30,7 @@ export default {
   actions: {
     async login(context, credentials) {
       var data = 'grant_type=password&username=' + credentials.username + '&password=' + credentials.password
-      
+
       try {
         var response = await axios.post(URL_AUTH, data)
       } catch (error) {
@@ -40,34 +40,32 @@ export default {
         return
       }
 
-      context.dispatch('commitToken', response)
+      var token = response.data.access_token
+
+      context.commit('setToken', token)
       context.commit('setUsername', credentials.username)
     },
     async register(context, credentials) {
       try {
-        var response = await axios.post(URL_USERS, credentials)
+        await axios.post(URL_USERS, credentials)
       } catch (error) {
         if (error.response.status == HTTP_BAD_REQUEST) {
           Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
         }
         return
       }
-
-      context.dispatch('commitToken', response)
-      context.commit('setUsername', credentials.username)
     },
-    commitToken(context, response) {
-      var token = response.data.access_token
-      context.commit('setToken', token)
+    logOut(context) {
+      context.commit('setToken', null)
     }
   },
   mutations: {
     setToken(state, token) {
       state.token = token
-      state.isAuthenticated = true
+      state.isAuthenticated = state.token ? true : false
     },
     setUsername(state, username) {
       state.username = username
-    }
+    },
   }
 }

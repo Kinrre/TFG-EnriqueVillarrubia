@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'login',
+  name: 'Login',
   methods: {
     async login(e) {
       e.preventDefault() // Prevent default behaviour of submit
@@ -39,9 +39,13 @@ export default {
     },
     getCredentials() {
       // Get the credentials from the user
-      var username = document.getElementById('username').value
+      var username = this.capitalize(document.getElementById('username').value)
       var password = document.getElementById('password').value
       return {'username': username, 'password': password}
+    },
+    capitalize(word) {
+      const lower = word.toLowerCase();
+      return word.charAt(0).toUpperCase() + lower.slice(1);
     }
   },
   created() {

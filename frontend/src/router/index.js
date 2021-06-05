@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
+import LogOut from '../views/LogOut.vue'
 import CreateRoom from '../views/CreateRoom.vue'
 import JoinRoom from '../views/JoinRoom.vue'
 import Room from '../views/Room.vue'
@@ -24,6 +25,11 @@ const routes = [
     path: '/login/',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/log-out/',
+    name: 'LogOut',
+    component: LogOut
   },
   {
     path: '/create-room/',

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 import auth from './auth.module.js'
 import games from './games.module.js'
@@ -12,5 +13,6 @@ export default new Vuex.Store({
     auth,
     games,
     room
-  }
+  },
+  plugins: [createPersistedState()]
 })

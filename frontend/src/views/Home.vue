@@ -5,7 +5,8 @@
       <router-link to="/login/">Login</router-link>
     </div>
     <div v-else class="login-register">
-      <router-link to="/profile/">Username - {{ username }}</router-link>
+      <router-link to="/profile/" class="register">Username - {{ username }}</router-link>
+      <router-link to="/log-out/">Log out</router-link>
     </div>
     <h1 class="header">List of Games</h1>
     <div class="games">
