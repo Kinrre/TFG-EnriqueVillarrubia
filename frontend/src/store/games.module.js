@@ -1,20 +1,27 @@
 import axios from 'axios'
+import Vue from 'vue'
 
 import router from '../router'
 
 const URL_GAMES = 'http://localhost:8000/api/v1/games/?skip=0&limit=100'
 const URL_ME_GAMES = 'http://localhost:8000/api/v1/users/me/games/?skip=0&limit=100'
 const URL_USERS = 'http://localhost:8000/api/v1/users/id/'
+const URL_TRAIN_GAME = 'http://localhost:8002/api/v1/train/'
 
+const HTTP_BAD_REQUEST = 400
 const HTTP_UNAUTHORIZED = 401
 
 export default {
   state: {
-    games: null
+    games: null,
+    trainingSuccessful: false
   },
   getters: {
     getGames(state) {
       return state.games
+    },
+    isTrainingSuccessful(state) {
+      return state.trainingSuccessful
     }
   },
   actions: {
@@ -61,10 +68,30 @@ export default {
 
       context.commit('setGames', games)
     },
+    async trainGame(context, id) {
+      Vue.swal.showLoading()
+
+      try {
+        await axios.post(URL_TRAIN_GAME + id)
+      } catch (error) {
+        if (error.response.status == HTTP_BAD_REQUEST) {
+          context.commit('setTrainingSuccuessful', false)
+          Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
+        }
+        return
+      }
+
+      Vue.swal('Successful!', 'Your game is beeing trained in the system.', 'success')
+
+      context.commit('setTrainingSuccuessful', true)
+    }
   },
   mutations: {
     setGames(state, games) {
       state.games = games
+    },
+    setTrainingSuccuessful(state, value) {
+      state.trainingSuccessful = value
     }
   }
 }
