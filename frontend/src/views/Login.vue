@@ -34,7 +34,7 @@ export default {
 
       if (this.$store.getters.isAuthenticated) {
         // Go to the home page
-        this.$router.push('/')
+        this.$router.push('/profile/')
       }
     },
     getCredentials() {

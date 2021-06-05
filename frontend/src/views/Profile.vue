@@ -10,7 +10,7 @@
       <router-link to="/profile/" class="register">Username - {{ username }}</router-link>
       <router-link to="/log-out/">Log out</router-link>
     </div>
-    <h1 class="header">List of Games</h1>
+    <h1 class="header">Your Games</h1>
     <div class="games">
       <table class="table-games">
         <tr>
@@ -18,10 +18,12 @@
           <th>Author</th>
           <th>Board size</th>
           <th>Max movements</th>
+          <th>Is Training</th>
           <th>Is Trained</th>
+          <th>Train</th>
           <th>Play</th>
         </tr>
-        <Game v-for="game in games" v-bind:props_style="game" :key="game.id"/>
+        <ProfileGame v-for="game in games" v-bind:props_style="game" :key="game.id"/>
       </table>
     </div>
     <div v-if="!isGamesLoaded">
@@ -31,31 +33,31 @@
 </template>
 
 <script>
-import Game from '../components/Game.vue'
+import ProfileGame from '../components/ProfileGame.vue'
 
 export default {
-  name: 'Home',
+  name: 'Profile',
   components: {
-    Game
+    ProfileGame
   },
   data() {
     return {
-      games: this.getGames(),
+      games: this.getMeGames(),
       isGamesLoaded: false,
       username: this.$store.getters.getUsername,
       isAuthenticated: this.$store.getters.isAuthenticated
     }
   },
   methods: {
-    async getGames() {
-      await this.$store.dispatch('getGames')
+    async getMeGames() {
+      await this.$store.dispatch('getMeGames')
       this.games = this.$store.getters.getGames
       this.isGamesLoaded = true
     }
   },
   created() {
     // Change title of page
-    document.title = 'Home'
+    document.title = 'Profile'
   }
 }
 </script>
