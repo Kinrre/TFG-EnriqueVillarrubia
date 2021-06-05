@@ -17,6 +17,9 @@
       <div class="item-form">
          <input type="submit" value="Login" id="login" class="login-submit">
       </div>
+      <div class="item-form-bottom">
+        <router-link to="/register/">New? Register now!</router-link>
+      </div>
     </form>
   </div>
 </template>
@@ -61,6 +64,7 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin: auto;
 }
 
 .header {
@@ -74,6 +78,7 @@ export default {
 }
 
 .item-form {
+  width: 100%;
   margin-bottom: 1vh;
 }
 
@@ -81,7 +86,16 @@ export default {
   margin-bottom: 2vh;
 }
 
+.item-form-bottom {
+  margin-top: 2vh;
+  text-align: center;
+}
+
 .login-submit {
+  width: 100%;
+}
+
+input {
   width: 100%;
 }
 </style>
