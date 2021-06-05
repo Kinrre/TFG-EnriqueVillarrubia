@@ -57,6 +57,7 @@ export default {
     },
     logOut(context) {
       context.commit('setToken', null)
+      context.commit('setUsername', null)
     }
   },
   mutations: {

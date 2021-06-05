@@ -22,7 +22,7 @@ def create_match(game_id: int, current_user: schemas.User = Depends(get_current_
 
 
 @router.get('/api/v1/matches/', response_model=schemas.Match, tags=['matches'])
-def get_match(room_code: str, db: Session = Depends(get_db)):
+def get_match(room_code: str, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
     db_match = crud.get_match_by_room_code(db, room_code)
 
     if db_match is None:

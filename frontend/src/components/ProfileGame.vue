@@ -7,7 +7,7 @@
       <td>{{ is_training }}</td>
       <td>{{ is_trained }}</td>
       <td><button v-on:click="trainGame" type="button" class="transparent" :disabled=!training_available>{{ training_emoji }}</button></td>
-      <td><button type="button" class="transparent">▶️</button></td>
+      <td><button v-on:click="createRoom" type="button" class="transparent">▶️</button></td>
     </tr>
 </template>
 
@@ -27,6 +27,7 @@ export default {
   },
   data() {
     return {
+      id: this.props_style.id,
       name: this.props_style.name,
       author: this.props_style.username,
       boardSize: this.props_style.board_size + 'x' + this.props_style.board_size,
@@ -48,13 +49,42 @@ export default {
       return emoji
     },
     async trainGame() {
-      await this.$store.dispatch('trainGame', this.props_style.id)
+      await this.$store.dispatch('trainGame', this.id)
 
       if (this.$store.getters.isTrainingSuccessful) {
         this.is_training = "✔️"
         this.training_available = false
         this.training_emoji = '-'
       }
+    },
+    async createRoom() {
+      // Create a room to play
+      var authHeader = this.$store.getters.getAuthHeader
+      var payload = {'gameId': this.id, 'authHeader': authHeader}
+      await this.$store.dispatch('createRoom', payload)
+
+      if (this.$store.getters.isAuthenticated) {
+        this.redirectToRoom()
+      }
+    },
+    redirectToRoom() {
+      // Redirect to the room created
+      var room = {
+        name: 'Room',
+        path: '/room/' + this.$store.getters.getRoomCode,
+        params: {
+          'roomCode': this.$store.getters.getRoomCode,
+          'boardSize': this.$store.getters.getBoardSize,
+          'initialBoard': this.$store.getters.getInitialBoard
+        }
+      }
+
+      var title = 'Send your friends this link!'
+      var body = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
+
+      this.$swal(title, body)
+
+      this.$router.push(room)
     }
   }
 }

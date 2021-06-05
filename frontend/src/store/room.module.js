@@ -1,9 +1,12 @@
 import axios from 'axios'
 import Vue from 'vue'
 
+import router from '../router'
+
 const URL_GAME = 'http://localhost:8000/api/v1/matches/?game_id='
 const URL_MATCH = 'http://localhost:8000/api/v1/matches/'
 
+const HTTP_UNAUTHORIZED = 401
 const HTTP_NOT_FOUND = 404
 
 export default {
@@ -44,7 +47,13 @@ export default {
       try {
         var response = await axios.post(url, null, payload.authHeader)
       } catch (error) {
-        if (error.response.status == HTTP_NOT_FOUND) {
+        if (error.response.status == HTTP_UNAUTHORIZED) {
+          // Remove token
+          context.commit('setToken', null)
+
+          // Go to login
+          router.push('/login/')
+        } else if (error.response.status == HTTP_NOT_FOUND) {
           Vue.swal('Game not found!', 'Check the game_id is valid.', 'error')
         }
         return
@@ -55,12 +64,22 @@ export default {
     },
     async joinRoom(context, payload) {
       var url = URL_MATCH + '?room_code=' + payload.roomCode
+      console.log(payload.authHeader)
 
       try {
-        var response = await axios.get(url)
+        var response = await axios.get(url, payload.authHeader)
       } catch (error) {
-        if (error.response.status == HTTP_NOT_FOUND) {
+        if (error.response.status == HTTP_UNAUTHORIZED) {
+          // Remove token
+          context.commit('setToken', null)
+
+          // Go to login
+          router.push('/login/')
+        } else if (error.response.status == HTTP_NOT_FOUND) {
           Vue.swal('Room not found!', 'Check the invite link is valid.', 'error')
+
+          // Go to home
+          //router.push('/')
         }
         return
       }

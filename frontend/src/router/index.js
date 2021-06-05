@@ -5,7 +5,6 @@ import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
 import LogOut from '../views/LogOut.vue'
 import Profile from '../views/Profile.vue'
-import CreateRoom from '../views/CreateRoom.vue'
 import JoinRoom from '../views/JoinRoom.vue'
 import Room from '../views/Room.vue'
 
@@ -36,11 +35,6 @@ const routes = [
     path: '/profile/',
     name: 'Profile',
     component: Profile
-  },
-  {
-    path: '/create-room/',
-    name: 'CreateRoom',
-    component: CreateRoom
   },
   {
     path: '/room/:roomCode',
