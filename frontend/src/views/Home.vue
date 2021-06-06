@@ -17,7 +17,7 @@
           <th>Name</th>
           <th>Author</th>
           <th>Board size</th>
-          <th>Max movements</th>
+          <th>Max Moves</th>
           <th>Is Trained</th>
           <th>Rules</th>
           <th>Play</th>
