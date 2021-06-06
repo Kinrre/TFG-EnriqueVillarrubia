@@ -21,6 +21,7 @@
           <th>Is Training</th>
           <th>Is Trained</th>
           <th>Train</th>
+          <th>Rules</th>
           <th>Play</th>
         </tr>
         <ProfileGame v-for="game in games" v-bind:props_style="game" :key="game.id"/>

@@ -19,6 +19,7 @@
           <th>Board size</th>
           <th>Max movements</th>
           <th>Is Trained</th>
+          <th>Rules</th>
           <th>Play</th>
         </tr>
         <Game v-for="game in games" v-bind:props_style="game" :key="game.id"/>

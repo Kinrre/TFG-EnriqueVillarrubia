@@ -124,6 +124,9 @@ export default {
   created() {
     // Ensure the room has been properly created
     if (this.boardSize == null || this.initialBoard == null) this.$router.push('/')
+
+    // Change title of page
+    document.title = 'Room'
   },
   mounted() {
     this.$socket.connect()

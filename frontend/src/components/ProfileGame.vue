@@ -7,6 +7,7 @@
       <td>{{ is_training }}</td>
       <td>{{ is_trained }}</td>
       <td><button v-on:click="trainGame" type="button" class="transparent" :disabled=!training_available>{{ training_emoji }}</button></td>
+      <td><button v-on:click="getRules" type="button" class="transparent">❓</button></td>
       <td><button v-on:click="createRoom" type="button" class="transparent">▶️</button></td>
     </tr>
 </template>
@@ -22,7 +23,9 @@ export default {
       boardSize: Number,
       maxMovements: Number,
       is_training: Boolean,
-      is_trained: Boolean
+      is_trained: Boolean,
+      initial_board: String,
+      pieces: Array
     }
   },
   data() {
@@ -35,10 +38,31 @@ export default {
       is_training: this.props_style.is_training ? "✔️" : "❌",
       is_trained: this.props_style.is_trained ? "✔️" : "❌",
       training_available: !this.props_style.is_training && !this.props_style.is_trained,
-      training_emoji: this.getTrainingEmoji()
+      training_emoji: this.getTrainingEmoji(),
+      initialBoard: this.props_style.initial_board,
+      pieces: this.props_style.pieces
     }
   },
   methods: {
+    getRules() {
+      var pieces = ''
+
+      for (let i = 0; i < this.pieces.length; i++) {
+        let piece = this.pieces[i]
+        pieces += 'Piece: ' + this.capitalize(piece.name)
+        pieces += ' (' + piece.fen_name + ')</br>'
+
+        for (let j = 0; j < piece.movements.length; j++) {
+          let movement = piece.movements[j]
+          pieces += this.capitalize(movement.direction) + ': ' + movement.range + ' '
+        }
+
+        pieces += '</br>'
+      }
+
+      var body = 'Initial board: ' + this.initialBoard + '<br/>' + pieces
+      this.$swal('Rules', body, 'info')
+    },
     getTrainingEmoji() {
       var emoji = "-"
 
@@ -85,6 +109,10 @@ export default {
       this.$swal(title, body)
 
       this.$router.push(room)
+    },
+    capitalize(word) {
+      const lower = word.toLowerCase();
+      return word.charAt(0).toUpperCase() + lower.slice(1);
     }
   }
 }

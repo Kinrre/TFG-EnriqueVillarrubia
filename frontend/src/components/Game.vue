@@ -4,7 +4,8 @@
       <td>{{ author }}</td>
       <td>{{ boardSize }}</td>
       <td>{{ maxMovements }}</td>
-      <td>{{ is_trained }}</td>
+      <td>{{ isTrained }}</td>
+      <td><button v-on:click="getRules" type="button" class="transparent">❓</button></td>
       <td><button v-on:click="createRoom" type="button" class="transparent">▶️</button></td>
     </tr>
 </template>
@@ -19,7 +20,9 @@ export default {
       author: String,
       boardSize: Number,
       maxMovements: Number,
-      is_trained: Boolean
+      is_trained: Boolean,
+      initial_board: String,
+      pieces: Array
     }
   },
   data() {
@@ -29,10 +32,31 @@ export default {
       author: this.props_style.username,
       boardSize: this.props_style.board_size + 'x' + this.props_style.board_size,
       maxMovements: this.props_style.maximum_movements,
-      is_trained: this.props_style.is_trained ? "✔️" : "❌"
+      isTrained: this.props_style.is_trained ? "✔️" : "❌",
+      initialBoard: this.props_style.initial_board,
+      pieces: this.props_style.pieces
     }
   },
   methods: {
+    getRules() {
+      var pieces = ''
+
+      for (let i = 0; i < this.pieces.length; i++) {
+        let piece = this.pieces[i]
+        pieces += 'Piece: ' + this.capitalize(piece.name)
+        pieces += ' (' + piece.fen_name + ')</br>'
+
+        for (let j = 0; j < piece.movements.length; j++) {
+          let movement = piece.movements[j]
+          pieces += this.capitalize(movement.direction) + ': ' + movement.range + ' '
+        }
+
+        pieces += '</br>'
+      }
+
+      var body = 'Initial board: ' + this.initialBoard + '<br/>' + pieces
+      this.$swal('Rules', body, 'info')
+    },
     async createRoom() {
       // Create a room to play
       var authHeader = this.$store.getters.getAuthHeader
@@ -61,6 +85,10 @@ export default {
       this.$swal(title, body)
 
       this.$router.push(room)
+    },
+    capitalize(word) {
+      const lower = word.toLowerCase();
+      return word.charAt(0).toUpperCase() + lower.slice(1);
     }
   }
 }
