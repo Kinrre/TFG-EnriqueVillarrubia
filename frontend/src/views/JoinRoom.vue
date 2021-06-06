@@ -34,7 +34,7 @@ export default {
     await this.registerRoom()
 
     // Go to the room
-    if (this.$store.getters.isAuthenticated) {
+    if (this.$store.getters.isRoomCreated && this.$store.getters.isAuthenticated) {
       this.redirectToRoom()
     }
   }

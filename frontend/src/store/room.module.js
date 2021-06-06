@@ -64,7 +64,6 @@ export default {
     },
     async joinRoom(context, payload) {
       var url = URL_MATCH + '?room_code=' + payload.roomCode
-      console.log(payload.authHeader)
 
       try {
         var response = await axios.get(url, payload.authHeader)

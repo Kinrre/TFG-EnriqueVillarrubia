@@ -7,6 +7,8 @@ app = FastAPI()
 sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins=['http://localhost:8080'])
 socket_app = socketio.ASGIApp(sio)
 
+rooms = {}
+
 @sio.event
 async def connect(sid, environ):
     print('connect ', sid)
@@ -15,9 +17,23 @@ async def connect(sid, environ):
 @sio.event
 async def join(sid, roomCode):
     # Join the player into a room with name 'roomCode'
-    # TODO: Check maximum size!
+    # Check number of players in the room
+    if roomCode not in rooms:
+        rooms[roomCode] = 1
+    elif rooms[roomCode] == 1:
+        rooms[roomCode] = 2
+    else:
+        return
+
     print('enter room', sid, roomCode, flush=True)
     sio.enter_room(sid, roomCode)
+
+
+@sio.event
+async def leave(sid, roomCode):
+    # Leave a player the room with name 'roomCode'
+    print('leave room', sid, flush=True)
+    sio.leave_room(sid, roomCode)
 
 
 @sio.event

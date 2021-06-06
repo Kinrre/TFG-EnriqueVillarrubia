@@ -48,7 +48,7 @@ export default {
       // Index zero are the coordinates, so we start in the index one
       for (var i = 1; i < pieces.length; i++) {
         var piece = pieces[i]
-        console.log(color, piece.getColor())
+        
         if (color != piece.getColor()) {
           isEndGame = false
         }
@@ -129,6 +129,9 @@ export default {
     this.$socket.connect()
   },
   beforeDestroy() {
+    var roomCode = this.$route.params.roomCode
+    this.$socket.emit('leave', roomCode)
+
     this.$socket.disconnect()
   }
 }
