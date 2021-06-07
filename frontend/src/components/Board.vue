@@ -53,6 +53,43 @@ export default {
       // Get the board background image
       return 'url(' + require('@/assets/boards/' + this.boardSize + 'x' + this.boardSize + '_board.png') + ')'
     },
+    getFen() {
+      // Get the fen from the actual pieces
+      var fen = ''
+      var pieces = this.$children
+
+      for (let height = 0; height < this.boardSize; height++) {
+        for (let width = 0; width < this.boardSize; width++) {
+          let width_style = width * 100
+          let height_style = height * 100
+          let fen_piece = '1'
+
+          // Index zero are the coordinates, so we start in the index one
+          for (let i = 1; i < pieces.length; i++) {
+            let piece = pieces[i]
+            let position = piece.getFromPosition()
+
+            // Get position if fromPosition is not available
+            if (position == null) {
+              position = piece.getPosition()
+            }
+
+            // Check if there is a piece in that position
+            if (position[0] == width_style && position[1] == height_style) {
+              fen_piece = piece.getFenName()
+            }
+          }
+          
+          fen += fen_piece
+        }
+        fen += '/'
+      }
+
+      // Remove the last '/'
+      fen = fen.slice(0, -1)
+
+      return fen
+    },
     piecesFromFen() {
       // Create pieces components from a fen string
       var pieces = []

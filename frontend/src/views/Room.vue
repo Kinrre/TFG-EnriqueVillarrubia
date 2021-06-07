@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     movePiece(position) {
-      // Move the piece to the new position
+      // Move the piece to the new position obtain from the socket.io
       var board = this.$children[0]
       var pieces = board.$children
 
@@ -33,7 +33,9 @@ export default {
         // Only move the piece in the 'fromPosition' to 'toPosition'
         if (position.fromPosition == piece.getStyle().transform) {
           piece.getStyle().transform = position.toPosition
-          piece.capturePiece()
+          
+          let hasCaptured = piece.capturePiece(true)
+          piece.playSound(hasCaptured)
         }
       }
     },

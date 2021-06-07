@@ -14,6 +14,7 @@ export default {
     roomCode: null,
     isRoomCreated: false,
 
+    gameId: null,
     boardSize: null,
     initialBoard: null,
 
@@ -26,6 +27,9 @@ export default {
     },
     isRoomCreated(state) {
       return state.isRoomCreated
+    },
+    getGameId(state) {
+      return state.gameId
     },
     getBoardSize(state) {
       return state.boardSize
@@ -89,6 +93,7 @@ export default {
     commitRoom(context, response) {
       var roomInfo = {
         'roomCode': response.data.room_code,
+        'gameId': response.data.game.id,
         'boardSize': response.data.game.board_size,
         'initialBoard': response.data.game.initial_board
       }
@@ -100,6 +105,8 @@ export default {
     setRoom(state, roomInfo) {
       state.roomCode = roomInfo.roomCode
       state.isRoomCreated = true
+
+      state.gameId = roomInfo.gameId
       state.boardSize = roomInfo.boardSize
       state.initialBoard = roomInfo.initialBoard
     },

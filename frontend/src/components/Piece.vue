@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    onMouseDown(event) {
+    async onMouseDown(event) {
       // Ensure is the active player
       if (!this.$store.getters.isActivePlayer) return
 
@@ -70,7 +70,7 @@ export default {
       // Move the piece
       this.movePiece(event)
     },
-    onMouseUp() {
+    async onMouseUp() {
       // Ensure is the active player
       if (!this.$store.getters.isActivePlayer) return
 
@@ -80,7 +80,7 @@ export default {
       // Ensure we are dragging the component
       if (!this.dragging) return
 
-      // Undo the cursor and tell that ww are not grabbing the piece
+      // Undo the cursor and tell that we are not grabbing the piece
       this.dragging = false
       this.style.cursor = 'grab'
 
@@ -90,15 +90,23 @@ export default {
       // Save the new position
       this.savePosition('toPosition')
 
-      // Delete the piece in the same square (capture the piece)
-      this.capturePiece()
+      // Check only if a piece has been captured
+      var hasCaptured = this.capturePiece(false)
 
-      // Emit 'move' event if the new position is different
-      this.emitMove()
+      // Play the corresponded sound
+      this.playSound(hasCaptured)
+
+      // Emit 'move' event if the new position is different and valid
+      var isValid = await this.emitMove()
+
+      // Delete the piece in the same square (capture the piece) if is valid
+      if (isValid) {
+        this.capturePiece(true)
+      }
     },
     savePosition(type) {
       // Save the coordinates of the piece
-      var coordinates = this.style.transform.match(/[+-]?\d+(\.\d+)?/g)
+      var coordinates = this.getPosition()
 
       if (type == 'fromPosition') {
         this.fromPosition = coordinates
@@ -165,7 +173,7 @@ export default {
     },
     centerPiece() {
       // Correct the position of a piece centering in a square
-      var offsets = this.style.transform.match(/[+-]?\d+(\.\d+)?/g)
+      var offsets = this.getPosition()
       var offsetX = offsets[0]
       var offsetY = offsets[1]
 
@@ -175,7 +183,7 @@ export default {
       // Update the position
       this.style.transform = 'translate(' + offsetX + '%, ' + offsetY + '%)'
     },
-    capturePiece() {
+    capturePiece(isValid) {
       // Get the component children of the board
       var children = this.$parent.$children
       var hasCaptured = false
@@ -186,13 +194,14 @@ export default {
 
         // The position is the same and the component is different
         if (this._uid != child._uid && this.getStyle().transform == child.getStyle().transform) {
-          this.$parent.removePiece(i - 1)
+          if (isValid) {
+            this.$parent.removePiece(i - 1)
+          }
           hasCaptured = true
         }
       }
 
-      // Play the corresponding sound
-      this.playSound(hasCaptured)
+      return hasCaptured
     },
     playSound(hasCaptured) {
       // Play different sound depending if the piece has captured another piece or not
@@ -208,22 +217,71 @@ export default {
 
       audio.play()
     },
-    emitMove() {
+    playIllegalSound() {
+      // Play an illegal sound due to an invalid movement
+      var audio = new Audio(require('@/assets/sounds/illegal.webm'))
+      audio.play()
+    },
+    async emitMove() {
       // Emit 'move' event if the new position is different
+      let isValid = true
+      
       if (this.fromPosition[0] != this.toPosition[0] || this.fromPosition[1] != this.toPosition[1]) {
-        var fromPosition = 'translate(' + this.fromPosition[0] + '%, ' + this.fromPosition[1] + '%)'
-        var toPosition = 'translate(' + this.toPosition[0] + '%, ' + this.toPosition[1] + '%)'
-        var data = {
-          'fromPosition': fromPosition,
-          'toPosition': toPosition,
-          'roomCode': this.$route.params.roomCode
+        if (await this.isValidMovement()) {
+          var fromPosition = 'translate(' + this.fromPosition[0] + '%, ' + this.fromPosition[1] + '%)'
+          var toPosition = 'translate(' + this.toPosition[0] + '%, ' + this.toPosition[1] + '%)'
+          var data = {
+            'fromPosition': fromPosition,
+            'toPosition': toPosition,
+            'roomCode': this.$route.params.roomCode
+          }
+          this.$socket.emit('move', data)
+        } else {
+          // Undo the movement as is not valid
+          isValid = false
+          this.undoMovement()
         }
-        this.$socket.emit('move', data)
       }
+
+      return isValid
+    },
+    async isValidMovement() {
+      // Check if the movement is valid
+      var gameId = this.$store.getters.getGameId
+      var fen = this.$parent.getFen()
+      var fromPosition = this.fromPosition
+      var toPosition = this.toPosition
+
+      var payload = {
+        'id': gameId,
+        'board': fen,
+        'color': this.props_style.color,
+        'from_position_x': fromPosition[1] / 100,
+        'from_position_y': fromPosition[0] / 100,
+        'to_position_x': toPosition[1] / 100,
+        'to_position_y': toPosition[0] / 100
+      }
+
+      await this.$store.dispatch('checkMovement', payload)
+
+      return this.$store.getters.isValidMovement
+    },
+    undoMovement() {
+      // Undo the previous movement
+      this.style.transform = 'translate(' + this.fromPosition[0] + '%, ' + this.fromPosition[1] + '%)'
+
+      this.fromPosition = null
+      this.toPosition = null
+
+      this.playIllegalSound()
     },
     getPiece() {
       // Get the piece background image
       return 'url(' + require('@/assets/pieces/' + this.props_style.color + '/' + this.props_style.color + '_' + this.props_style.piece + '.png') + ')'
+    },
+    getFenName() {
+      // Return the fen name of the piece
+      return this.props_style.piece
     },
     getColor() {
       // Return the color of the piece
@@ -232,6 +290,14 @@ export default {
     getStyle() {
       // Return the style of the piece
       return this.style
+    },
+    getFromPosition() {
+      // Return the fromPosition of the piece
+      return this.fromPosition
+    },
+    getPosition() {
+      // Return the position of the piece
+      return this.style.transform.match(/[+-]?\d+(\.\d+)?/g)
     }
   },
   mounted() {

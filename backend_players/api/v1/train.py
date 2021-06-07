@@ -4,8 +4,9 @@ from fastapi.exceptions import HTTPException
 
 from multiprocessing import Process
 
-from backend_players.players.main import train
+from backend_players.schemas import TrainResponse
 from backend_players.core.config import GAME_URL, MEMORY_GPU, TIME_WAIT_GPU
+from backend_players.players.main import train
 
 import GPUtil
 import requests
@@ -13,7 +14,7 @@ import time
 
 router = APIRouter()
 
-@router.post('/api/v1/train/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['train'])
+@router.post('/api/v1/train/{id}', response_model=TrainResponse, status_code=status.HTTP_202_ACCEPTED, tags=['train'])
 async def train_game(id: int):
     time.sleep(TIME_WAIT_GPU) # Wait to create the other training processes
 
@@ -42,7 +43,7 @@ async def train_game(id: int):
 
     model = 'backend_players/players/models/' + game_json['model'] # Obtain the model of the game
 
-    proc =  Process(target=train, args=(game_json, model)) # Create the process of training
+    proc = Process(target=train, args=(game_json, model)) # Create the process of training
     proc.start() # Start the process
 
-    return {'detail': 'Player training request sent, check the id for the status', 'id': game_json['id']}
+    return {'id': game_json['id'], 'detail': 'Player training request sent, check the id for the status'}
