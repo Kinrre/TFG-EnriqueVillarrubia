@@ -20,6 +20,7 @@ export default {
 
     color: null,
     isActivePlayer: false,
+    isCheckingMovement: false
   },
   getters: {
     getRoomCode(state) {
@@ -39,6 +40,9 @@ export default {
     },
     isActivePlayer(state) {
       return state.isActivePlayer
+    },
+    isCheckingMovement(state) {
+      return state.isCheckingMovement
     },
     getColor(state) {
       return state.color
@@ -116,5 +120,8 @@ export default {
     setIsActivePlayer(state, active) {
       state.isActivePlayer = active
     },
+    setIsCheckingMovement(state, active) {
+      state.isCheckingMovement = active
+    }
   }
 }

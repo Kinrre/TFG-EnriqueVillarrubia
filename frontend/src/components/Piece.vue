@@ -36,9 +36,13 @@ export default {
     }
   },
   methods: {
-    async onMouseDown(event) {
+    onMouseDown(event) {
+      console.log(this.$store.getters.isCheckingMovement)
       // Ensure is the active player
       if (!this.$store.getters.isActivePlayer) return
+
+      // Ensure we are not checking a movement
+      if (this.$store.getters.isCheckingMovement) return
 
       // Ensure is the right color
       if (this.$store.getters.getColor != this.props_style.color) return 
@@ -61,6 +65,9 @@ export default {
       // Ensure is the active player
       if (!this.$store.getters.isActivePlayer) return
 
+      // Ensure we are not checking a movement
+      if (this.$store.getters.isCheckingMovement) return
+
       // Ensure is the right color
       if (this.$store.getters.getColor != this.props_style.color) return 
 
@@ -73,6 +80,9 @@ export default {
     async onMouseUp() {
       // Ensure is the active player
       if (!this.$store.getters.isActivePlayer) return
+
+      // Ensure we are not checking a movement
+      if (this.$store.getters.isCheckingMovement) return
 
       // Ensure is the right color
       if (this.$store.getters.getColor != this.props_style.color) return 
@@ -227,6 +237,9 @@ export default {
       let isValid = true
       
       if (this.fromPosition[0] != this.toPosition[0] || this.fromPosition[1] != this.toPosition[1]) {
+        // Unable the movement while waiting to confirm the validity of the movement
+        this.$store.commit('setIsCheckingMovement', true)
+
         if (await this.isValidMovement()) {
           var fromPosition = 'translate(' + this.fromPosition[0] + '%, ' + this.fromPosition[1] + '%)'
           var toPosition = 'translate(' + this.toPosition[0] + '%, ' + this.toPosition[1] + '%)'
@@ -241,6 +254,9 @@ export default {
           isValid = false
           this.undoMovement()
         }
+
+        // Unset the flag
+        this.$store.commit('setIsCheckingMovement', false)
       }
 
       return isValid
