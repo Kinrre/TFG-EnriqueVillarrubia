@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend_players.api.v1 import train, movements
+from backend_players.api.v1 import train, movements, players
 
 app = FastAPI(
     title='Backend Players API',
@@ -18,3 +18,4 @@ app.add_middleware(
 
 app.include_router(train.router)
 app.include_router(movements.router)
+app.include_router(players.router)

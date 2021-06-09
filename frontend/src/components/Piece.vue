@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     onMouseDown(event) {
-      console.log(this.$store.getters.isCheckingMovement)
       // Ensure is the active player
       if (!this.$store.getters.isActivePlayer) return
 

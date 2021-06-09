@@ -64,6 +64,8 @@ export default {
 
       if (isEndGame) {
         this.$socket.emit('end_game', data)
+        
+        // Notify backend the winner
       }
     }
   },
@@ -76,6 +78,8 @@ export default {
       if (color == 'black') {
         var data = {'roomCode': roomCode, 'playerName': this.$route.params.playerName}
         this.$socket.emit('room_completed', data)
+
+        // Notify backend the second player
       }
     },
     roomCompleted(playerName) {
@@ -131,6 +135,7 @@ export default {
     document.title = 'Room'
   },
   mounted() {
+    this.$store.commit('setIsActivePlayer', false)
     this.$socket.connect()
   },
   beforeDestroy() {

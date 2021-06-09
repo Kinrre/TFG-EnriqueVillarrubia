@@ -5,7 +5,9 @@ import router from '../router'
 
 const URL_GAME = 'http://localhost:8000/api/v1/matches/?game_id='
 const URL_MATCH = 'http://localhost:8000/api/v1/matches/'
+const URL_PLAYERS = 'http://localhost:8002/api/v1/players/'
 
+const HTTP_BAD_REQUEST = 400
 const HTTP_UNAUTHORIZED = 401
 const HTTP_NOT_FOUND = 404
 
@@ -84,9 +86,6 @@ export default {
           router.push('/login/')
         } else if (error.response.status == HTTP_NOT_FOUND) {
           Vue.swal('Room not found!', 'Check the invite link is valid.', 'error')
-
-          // Go to home
-          //router.push('/')
         }
         return
       }
@@ -103,6 +102,15 @@ export default {
       }
 
       context.commit('setRoom', roomInfo)
+    },
+    async createPlayer(context, payload) {
+      try {
+        await axios.post(URL_PLAYERS, payload)
+      } catch (error) {
+        if (error.response.status == HTTP_BAD_REQUEST) {
+          Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
+        }
+      }
     }
   },
   mutations: {

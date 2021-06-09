@@ -64,10 +64,10 @@ export default {
       await this.$store.dispatch('createRoom', payload)
 
       if (this.$store.getters.isAuthenticated) {
-        this.redirectToRoom()
+        await this.redirectToRoom()
       }
     },
-    redirectToRoom() {
+    async redirectToRoom() {
       // Redirect to the room created
       var room = {
         name: 'Room',
@@ -79,12 +79,41 @@ export default {
         }
       }
 
+      var title = ''
+      var body = ''
+
+      if (this.props_style.is_trained) {
+        title = 'Player generated available!'
+        body = 'Do you want to play with the generated player?'
+
+        var response = await this.$swal({
+          title: title,
+          text: body,
+          icon: 'question',
+          showCancelButton: true
+        })
+
+        if (response.isConfirmed) {
+          var payload = {
+            'id': this.$store.getters.getGameId,
+            'room_code': this.$store.getters.getRoomCode,
+          }
+
+          await this.$store.dispatch('createPlayer', payload)
+        } else {
+          this.createRoomLink()
+        }
+      } else {
+        this.createRoomLink()
+      }
+
+      this.$router.push(room)
+    },
+    createRoomLink() {
       var title = 'Send your friends this link!'
       var body = 'http://localhost:8080/join-room/' + this.$store.getters.getRoomCode
 
       this.$swal(title, body)
-
-      this.$router.push(room)
     },
     capitalize(word) {
       const lower = word.toLowerCase();

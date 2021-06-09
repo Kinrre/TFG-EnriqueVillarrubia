@@ -114,17 +114,24 @@ class Board():
         final_index = position_index * self.square_index + new_position_index
         return final_index
 
+    def calculate_movement_2D(self, action):
+        """ Calculate the movement from an action in original_position and new_position. """
+        square = action // self.square_index
+        original_position = np.unravel_index(square, self.board_size)
+
+        new_square = action % self.square_index
+        new_position = np.unravel_index(new_square, self.board_size)
+
+        return (original_position, new_position)
+
     def move(self, action):
         """ 
         Execute an action for the current board.
         NOTE: It does not check if the movement is valid.
         """
-        square = action // self.square_index
-        original_position = np.unravel_index(square, self.board_size)
+        (original_position, new_position) = self.calculate_movement_2D(action)
+        
         original_piece = self.np_pieces[original_position]
-
-        new_square = action % self.square_index
-        new_position = np.unravel_index(new_square, self.board_size)
 
         self.np_pieces[new_position] = original_piece
         self.np_pieces[original_position] = 0

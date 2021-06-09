@@ -1,4 +1,3 @@
-from GPUtil.GPUtil import GPU
 from fastapi import APIRouter, status
 from fastapi.exceptions import HTTPException
 
