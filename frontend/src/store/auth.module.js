@@ -50,7 +50,7 @@ export default {
         await axios.post(URL_USERS, credentials)
       } catch (error) {
         if (error.response.status == HTTP_BAD_REQUEST) {
-          Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
+          await Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
         }
         return
       }
