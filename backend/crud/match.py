@@ -27,14 +27,3 @@ def get_match_by_room_code(db: Session, room_code: str):
         models.Match.room_code == room_code
     ).first()
     return db_match
-
-
-def update_match(db: Session, match_id: schemas.MatchCreate, player2: schemas.User):
-    """Update a match from the database given his id."""
-    db_match = get_match_by_id(db, match_id)
-    db_match.player2_id = player2.id
-
-    db.commit()
-    db.refresh(db_match)
-
-    return db_match

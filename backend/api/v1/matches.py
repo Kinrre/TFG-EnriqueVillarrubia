@@ -30,22 +30,3 @@ def get_match(room_code: str, current_user: schemas.User = Depends(get_current_u
                             detail='Match not found')
 
     return db_match
-
-
-@router.put('/api/v1/matches/{match_id}', response_model=schemas.Match, tags=['matches'])
-def update_match(match_id: int, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    db_match = crud.get_match_by_id(db, match_id)
-
-    if not db_match:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail='Match not found')
-
-    if db_match.player2:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail='player2 already exists')
-
-    if db_match.player1 == current_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail='player1 and player2 cannot be the same player')
-
-    return crud.update_match(db, match_id, current_user)

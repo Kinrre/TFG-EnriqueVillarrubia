@@ -32,7 +32,7 @@ class ArenaOnline:
         neural_network = NNetWrapper(self.game)
         neural_network.load_checkpoint(model, 'best.pth.tar')
 
-        args = dotdict({'numMCTSSims': 30, 'cpuct': 1})
+        args = dotdict({'numMCTSSims': 25, 'cpuct': 1})
         mcts = MCTS(self.game, neural_network, args)
 
         neural_network_player = lambda x: np.argmax(mcts.getActionProb(x, temp=0))
