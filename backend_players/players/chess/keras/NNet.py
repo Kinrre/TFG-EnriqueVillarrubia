@@ -25,10 +25,8 @@ class NNetWrapper(NeuralNet):
     def __init__(self, game, small, log_dir=DEFAULT_LOG_DIR):
         # The board size is less than 5x5
         if small:
-            print('small')
             self.nnet = ChessNNetSmall(game, args)
         else:
-            print('big')
             self.nnet = ChessNNet(game, args)
 
         self.board_x, self.board_y = game.getBoardSize()

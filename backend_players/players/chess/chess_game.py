@@ -43,7 +43,6 @@ class ChessGame(Game):
 
     def getSymmetries(self, board, pi):
         # Board is left/right board symmetric
-        # TODO: IS NOT SYMETRIC!!!!!!!!!!
         return [(board, pi), (board[:, ::-1], pi[::-1])]
 
     def stringRepresentation(self, board):
