@@ -248,6 +248,10 @@ export default {
             'roomCode': this.$route.params.roomCode
           }
           this.$socket.emit('move', data)
+
+          // Unset the fromPosition and toPosition
+          this.fromPosition = null
+          this.toPosition = null
         } else {
           // Undo the movement as is not valid
           isValid = false
