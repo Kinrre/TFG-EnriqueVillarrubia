@@ -34,7 +34,7 @@ args = dotdict({
 })
 
 
-def train_offline(game_configuration, model=DEFAULT_CHECKPOINT):
+def train_offline(game_configuration, small, model=DEFAULT_CHECKPOINT):
     args.checkpoint = model
     Path(args.checkpoint).mkdir(parents=True, exist_ok=True) # Create directory for checkpoints if not exists
 
@@ -42,7 +42,7 @@ def train_offline(game_configuration, model=DEFAULT_CHECKPOINT):
     g = Game(game_configuration)
 
     log.info('Loading %s...', nn.__name__)
-    nnet = nn(g, args.checkpoint)
+    nnet = nn(g, small, args.checkpoint)
 
     if args.load_model:
         log.info('Loading checkpoint "%s/%s"...', args.load_folder_file[0], args.load_folder_file[1])
@@ -61,9 +61,9 @@ def train_offline(game_configuration, model=DEFAULT_CHECKPOINT):
     c.learn()
 
 
-def train(game_configuration, model=DEFAULT_CHECKPOINT):
+def train(game_configuration, small, model=DEFAULT_CHECKPOINT):
     requests.put(GAME_URL + str(game_configuration['id']), json={'is_training': True}) # Notify train begining
-    train_offline(game_configuration, model)
+    train_offline(game_configuration, small, model)
     requests.put(GAME_URL + str(game_configuration['id']), json={'is_training': False, 'is_trained': True}) # Notify train finished
 
 

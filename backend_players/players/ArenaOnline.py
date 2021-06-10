@@ -20,16 +20,16 @@ class ArenaOnline:
 
     sio = socketio.Client()
 
-    def __init__(self, game_configuration, model, room_code):
+    def __init__(self, game_configuration, small, model, room_code):
         self.game = Game(game_configuration)
         self.board = self.game.getInitBoard()
-        self.neural_network_player = self.__create_player(model)
+        self.neural_network_player = self.__create_player(small, model)
         self.room_code = room_code
         self.is_active_player = False
 
-    def __create_player(self, model):
+    def __create_player(self, small, model):
         """ Create the player of the model trained. """
-        neural_network = NNetWrapper(self.game)
+        neural_network = NNetWrapper(self.game, small)
         neural_network.load_checkpoint(model, 'best.pth.tar')
 
         args = dotdict({'numMCTSSims': 25, 'cpuct': 1})
@@ -60,6 +60,11 @@ class ArenaOnline:
                 # Create our movement
                 payload = self.move_piece()
                 self.sio.emit('move', payload)
+
+                # Check end game
+                (has_end, payload) = self.get_end_game()
+                if has_end:
+                    self.sio.emit('end_game', payload)
             else:
                 self.is_active_player = False
 
@@ -119,12 +124,27 @@ class ArenaOnline:
         current_player = 1 # The opponent are the white pieces
         self.board, current_player = self.game.getNextState(self.board, current_player, white_action) # Get the next state
 
+    def get_end_game(self):
+        """ Checks if the game has ended. """
+        end = self.game.getGameEnded(self.board, 0)
+        color = None
+
+        if end == 1:
+            color = 'white'
+        elif end == -1:
+            color = 'black'
+
+        has_end = True if color != None else False
+        payload = {'roomCode': self.room_code, 'winner': color}
+
+        return (has_end, payload)
+
     def run(self):
         self.call_backs()
         self.sio.connect(SOCKET_IO_ENDPOINT)
         self.sio.wait()
 
 
-def play(game_configuration, model, room_code):
-    player = ArenaOnline(game_configuration, model, room_code)
+def play(game_configuration, small, model, room_code):
+    player = ArenaOnline(game_configuration, small, model, room_code)
     player.run()

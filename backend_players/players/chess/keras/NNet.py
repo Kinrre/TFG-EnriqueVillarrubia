@@ -6,7 +6,7 @@ from tensorflow.keras.callbacks import TensorBoard
 
 from backend_players.players.utils import *
 from backend_players.players.NeuralNet import NeuralNet
-from backend_players.players.chess.keras.ChessNNet import ChessNNet as onnet
+from backend_players.players.chess.keras.ChessNNet import ChessNNet, ChessNNetSmall
 
 DEFAULT_LOG_DIR = 'D:/modelos/chess/modelo2'
 
@@ -22,8 +22,15 @@ args = dotdict({
 
 class NNetWrapper(NeuralNet):
 
-    def __init__(self, game, log_dir=DEFAULT_LOG_DIR):
-        self.nnet = onnet(game, args)
+    def __init__(self, game, small, log_dir=DEFAULT_LOG_DIR):
+        # The board size is less than 5x5
+        if small:
+            print('small')
+            self.nnet = ChessNNetSmall(game, args)
+        else:
+            print('big')
+            self.nnet = ChessNNet(game, args)
+
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
         args.log_dir = log_dir

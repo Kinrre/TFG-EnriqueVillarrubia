@@ -40,9 +40,13 @@ async def train_game(id: int):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Game already training')
 
+    # Indicate what neural network will be used to trained
+    board_size = game_json['board_size']
+    small =  True if board_size < 5 else False
+
     model = 'backend_players/players/models/' + game_json['model'] # Obtain the model of the game
 
-    proc = Process(target=train, args=(game_json, model)) # Create the process of training
+    proc = Process(target=train, args=(game_json, small, model)) # Create the process of training
     proc.start() # Start the process
 
     return {'id': game_json['id'], 'detail': 'Player training request sent, check the id for the status'}

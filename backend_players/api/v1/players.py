@@ -32,9 +32,13 @@ async def play_game(petition: PlayGamePetition):
 
     game_json = game_response.json()
 
+    # Indicate what neural network will be used to trained
+    board_size = game_json['board_size']
+    small =  True if board_size < 5 else False
+
     model = 'backend_players/players/models/' + game_json['model'] # Obtain the model of the game
 
-    proc = Process(target=play, args=(game_json, model, petition.room_code)) # Create the process of training
+    proc = Process(target=play, args=(game_json, small, model, petition.room_code)) # Create the process of training
     proc.start() # Start the process
 
     return {'detail': 'Player creation request sent'}
