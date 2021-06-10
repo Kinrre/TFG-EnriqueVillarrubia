@@ -6,6 +6,7 @@ import router from '../router'
 const URL_GAMES = 'http://localhost:8000/api/v1/games/?skip=0&limit=100'
 const URL_ME_GAMES = 'http://localhost:8000/api/v1/users/me/games/?skip=0&limit=100'
 const URL_USERS = 'http://localhost:8000/api/v1/users/id/'
+const URL_CREATE_GAME = 'http://localhost:8000/api/v1/users/me/games/'
 const URL_TRAIN_GAME = 'http://localhost:8002/api/v1/train/'
 const URL_CHECK_MOVEMENT = 'http://localhost:8002/api/v1/movements/'
 
@@ -72,6 +73,28 @@ export default {
       }
 
       context.commit('setGames', games)
+    },
+    async createGame(context, payload) {
+      var authHeader = context.getters.getAuthHeader
+
+      try {
+        await axios.post(URL_CREATE_GAME, payload, authHeader)
+        await Vue.swal('Success!', 'The game has been successfully created.', 'success')
+
+        // Go to the profile
+        router.push('/profile/')
+      } catch (error) {
+        if (error.response.status == HTTP_BAD_REQUEST) {
+          Vue.swal('Bad request!', error.response.data.detail + '.', 'error')
+        } else if (error.response.status == HTTP_UNAUTHORIZED) {
+          // Remove token
+          context.commit('setToken', null)
+
+          // Go to login
+          router.push('/login/')
+        }
+        return
+      }      
     },
     async trainGame(context, id) {
       Vue.swal.showLoading()

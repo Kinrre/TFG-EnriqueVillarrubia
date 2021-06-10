@@ -5,6 +5,7 @@ import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
 import LogOut from '../views/LogOut.vue'
 import Profile from '../views/Profile.vue'
+import NewGame from '../views/NewGame.vue'
 import JoinRoom from '../views/JoinRoom.vue'
 import Room from '../views/Room.vue'
 
@@ -35,6 +36,11 @@ const routes = [
     path: '/profile/',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path: '/new-game/',
+    name: 'NewGame',
+    component: NewGame
   },
   {
     path: '/room/:roomCode',

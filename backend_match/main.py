@@ -32,7 +32,7 @@ async def join(sid, roomCode):
 @sio.event
 async def leave(sid, roomCode):
     # Leave a player the room with name 'roomCode'
-    print('leave room', sid, flush=True)
+    print('leave room', sid, roomCode, flush=True)
     sio.leave_room(sid, roomCode)
     await sio.emit('leave', room=roomCode)
 

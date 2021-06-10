@@ -135,7 +135,7 @@ export default {
     this.$socket.connect()
   },
   beforeDestroy() {
-    var roomCode = this.$route.params.roomCode
+    var roomCode = this.$store.getters.getRoomCode
     this.$socket.emit('leave', roomCode)
 
     this.$socket.disconnect()

@@ -71,7 +71,7 @@ class ArenaOnline:
             sys.exit(0)
 
         @self.sio.event
-        def leave(data):
+        def leave():
             """ Leave room event. """
             self.sio.emit('leave', self.room_code)
             self.sio.disconnect()

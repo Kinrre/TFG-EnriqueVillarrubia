@@ -15,7 +15,7 @@
         <input type="password" placeholder="Password" id="password" required="required">
       </div>
       <div class="item-form">
-         <input type="submit" value="Login" id="login" class="login-submit">
+         <input type="submit" value="Login" id="login">
       </div>
       <div class="item-form-bottom">
         <router-link to="/register/">New? Register now!</router-link>
@@ -29,7 +29,8 @@ export default {
   name: 'Login',
   methods: {
     async login(e) {
-      e.preventDefault() // Prevent default behaviour of submit
+      // Prevent default behaviour of submit
+      e.preventDefault()
 
       var credentials = this.getCredentials()
 
@@ -89,10 +90,6 @@ export default {
 .item-form-bottom {
   margin-top: 2vh;
   text-align: center;
-}
-
-.login-submit {
-  width: 100%;
 }
 
 input {
