@@ -18,13 +18,13 @@ GAME_URL = 'http://localhost:8000/api/v1/games/' # Game endpoint
 DEFAULT_CHECKPOINT = 'D:/modelos/chess/modelo2'
 
 args = dotdict({
-    'numIters': 3,
-    'numEps': 2,              # Number of complete self-play games to simulate during a new iteration.
+    'numIters': 25,
+    'numEps': 20,              # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 10,        #
     'updateThreshold': 0.1,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
-    'numMCTSSims': 15,          # Number of games moves for MCTS to simulate.
-    'arenaCompare': 2,         # Number of games to play during arena play to determine if new net will be accepted.
+    'numMCTSSims': 25,          # Number of games moves for MCTS to simulate.
+    'arenaCompare': 15,         # Number of games to play during arena play to determine if new net will be accepted.
     'cpuct': 1,
 
     'checkpoint': DEFAULT_CHECKPOINT,
