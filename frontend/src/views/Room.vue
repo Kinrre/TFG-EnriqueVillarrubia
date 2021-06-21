@@ -114,11 +114,11 @@ export default {
 
       if (color == data.winner) {
         let title = 'You win!'
-        let body = 'Well played :D'
+        let body = 'Well played.'
         this.$swal(title, body, 'success')
       } else {
         let title = 'You loose!'
-        let body = 'Good luck next time :D'
+        let body = 'Good luck next time.'
         this.$swal(title, body, 'error')
       }
     }
@@ -132,6 +132,7 @@ export default {
   },
   mounted() {
     this.$store.commit('setIsActivePlayer', false)
+    this.$store.commit('setIsCheckingMovement', false)
     this.$socket.connect()
   },
   beforeDestroy() {
