@@ -1,12 +1,34 @@
 {
-  "name": "First game",
-  "board_size": 6,
-  "initial_board": "1pppp1/1pppp1/6/6/1PPPP1/1PPPP1",
-  "maximum_movements": 50,
+  "name": "Pawns and Rocks",
+  "board_size": 4,
+  "initial_board": "prrp/4/4/RPPR",
+  "maximum_movements": 30,
   "pieces": [
     {
-      "name": "pawn",
+      "name": "Pawn",
       "fen_name": "p",
+      "movements": [
+        {
+          "direction": "north",
+          "range": 1
+        },
+        {
+          "direction": "south",
+          "range": 1
+        },
+        {
+          "direction": "west",
+          "range": 1
+        },
+        {
+          "direction": "east",
+          "range": 1
+        }
+      ]
+    },
+    {
+      "name": "Rock",
+      "fen_name": "r",
       "movements": [
         {
           "direction": "north",
