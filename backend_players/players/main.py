@@ -76,4 +76,5 @@ if __name__ == '__main__':
     with open(parser_args.path, 'r') as f:
         content = f.read()
 
-    train_offline(content)
+    small = True
+    train_offline(content, small)
