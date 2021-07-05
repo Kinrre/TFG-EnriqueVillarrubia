@@ -45,13 +45,25 @@ With respect to the database running in PostgreSQL, the database name and a rand
 sudo service start postgresql start
 ```
 
-Then, in order to create the database, open a \acs{SQL} shell and execute:
+Then, in order to create the database, open a SQL shell:
+
+```
+sudo -u postgres psql
+```
+
+Create the database:
 
 ```
 CREATE DATABASE db;
 ```
 
-Once created the database, the user must be created:
+Once created the database, connect to it:
+
+```
+\c db;
+```
+
+After that, the user must be created:
 
 ```
 CREATE USER jhtw6nsf WITH ENCRYPTED PASSWORD '475fa74c47d1';
@@ -67,7 +79,7 @@ Now, the installation has finished and the application is ready to be executed.
 
 ## Running the main backend
 
-All the backends developed are running using the uvicorn server. In order to execute the main backend, it is necessary to execute the following command:
+All the backends developed are running using the uvicorn server. In order to execute the main backend, it is necessary to execute the following command in the root of the project:
 
 ```
 uvicorn backend.main:app
@@ -91,7 +103,7 @@ uvicorn backend.main:app --port 8002
 
 ## Running the frontend
 
-Finally, a server is required to provide the frontend files. So, the command to execute is:
+Finally, a server is required to provide the frontend files. So, the command to execute in the TFG-EnriqueVillarrubia/frontend/ directory is:
 
 ```
 npm run serve
