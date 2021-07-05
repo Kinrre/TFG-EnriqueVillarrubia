@@ -44,3 +44,6 @@ tensorboard == 2.5.0
 # backend_players/players/Arena.py: 3
 # backend_players/players/Coach.py: 9
 tqdm == 4.61.0
+
+# Uvicorn server
+uvicorn == 0.13.4
