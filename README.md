@@ -3,7 +3,7 @@
 The project is organised into the following directories, structured depending on their purpose:
 
 * __backend.__ Main backend responsible for the users, games and matches management and data persistence.
-* __backend_match.__ Real-time matches backend implemented using the WebSocket communication protocol.
+* __backend_match.__ Real-time match backend implemented using the WebSocket communication protocol.
 * __backend_players.__ The core of this Bachelor of Computer Science, where the general board game and the AlphaZero algorithm for creation of the players are located. Employing a multiprocessing backend for their creation and verification of movements.
 * __frontend.__ Web application designed in Vue.js.
 
@@ -73,9 +73,9 @@ All the backends developed are running using the uvicorn server. In order to exe
 uvicorn backend.main:app
 ```
 
-## Running the real-time matches backend
+## Running the real-time match backend
 
-The execution of the real-time matches backend is equal to the previous one, except the port of the server must be changed to 8001. So, the command to execute is:
+The execution of the real-time match backend is equal to the previous one, except the port of the server must be changed to 8001. So, the command to execute is:
 
 ```
 uvicorn backend.main:app --port 8001
