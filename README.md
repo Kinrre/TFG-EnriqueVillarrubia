@@ -103,4 +103,4 @@ It is also possible to compile the web application minifying the files that will
 npm run build
 ```
 
-Lastly, to use the application it is necessary to open a web browser and navigate to http://localhost:8000/. The documentation of the backend is located in http://localhost:8080/docs.
+Lastly, to use the application it is necessary to open a web browser and navigate to http://localhost:8080/. The documentation of the backend is located in http://localhost:8000/docs.
